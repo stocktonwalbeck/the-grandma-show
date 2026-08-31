@@ -40,7 +40,7 @@ async function dedupeAnswers(opts, { prompt, truth, lies }) {
   const out = await chatJSON(opts, DEDUPE_SYSTEM, user);
   const groups = Array.isArray(out.groups) ? out.groups : null;
   if (!groups) throw new Error('bad dedupe output');
-  return groups.map((g) => ({ ids: (g.ids || []).map(String), display: typeof g.display === 'string' ? g.display.trim().slice(0, 80) : undefined }));
+  return groups.map((g) => ({ ids: (g.ids || []).map(String), display: typeof g.display === 'string' ? g.display.trim().slice(0, 200) : undefined }));
 }
 
 // approx $ per 1024x1024 image (gpt-image-1 numbers are published; others derived from token prices)

@@ -229,7 +229,7 @@ class Engine {
     if (who !== 'grandma' && !this.players.has(who)) return err('Join the game first');
     let value;
     if (item.type === 'fibbage') {
-      value = String(raw ?? '').replace(/\s+/g, ' ').trim().slice(0, this.config.maxAnswerLength || 40);
+      value = String(raw ?? '').replace(/\s+/g, ' ').trim().slice(0, this.config.maxAnswerLength || 200);
       if (!value) return err('Type something first');
     } else if (item.type === 'number') {
       value = Number(String(raw ?? '').replace(/,/g, '').trim());
@@ -242,7 +242,7 @@ class Engine {
       if (who === 'grandma') return err('You are the judge on this one. Sit tight.');
       const clean = (x, n) => String(x ?? '').replace(/\s+/g, ' ').trim().slice(0, n);
       const memory = clean(raw && typeof raw === 'object' ? raw.memory : '', this.config.maxMemoryLength || 100);
-      const scene = clean(raw && typeof raw === 'object' ? raw.scene : raw, this.config.maxPromptLength || 240);
+      const scene = clean(raw && typeof raw === 'object' ? raw.scene : raw, this.config.maxPromptLength || 500);
       if (scene.length < 3) return err('Describe what the picture should show');
       value = { memory, scene };
     } else return err('Bad item type');
@@ -317,7 +317,7 @@ class Engine {
     for (const g of groups) {
       if (!g || !Array.isArray(g.ids)) { fixes.push('bad group'); continue; }
       const ids = g.ids.map(String).filter((id) => { if (!known.has(id)) { fixes.push('unknown ' + id); return false; } if (seen.has(id)) { fixes.push('dup ' + id); return false; } seen.add(id); return true; });
-      if (ids.length) out.push({ ids, display: typeof g.display === 'string' && g.display.trim() ? g.display.trim().slice(0, 40) : undefined });
+      if (ids.length) out.push({ ids, display: typeof g.display === 'string' && g.display.trim() ? g.display.trim().slice(0, this.config.maxAnswerLength || 200) : undefined });
     }
     for (const [id, text] of known) if (!seen.has(id)) { fixes.push('missing ' + id); out.push({ ids: [id], display: text || undefined }); }
     if (!out.some((g) => g.ids.includes('TRUTH'))) return null;
@@ -625,7 +625,7 @@ class Engine {
       item: it ? { type: it.type, prompt: it.prompt, double: !!it.double, tone: it.tone || 'lie', src: it.src, caption: it.caption, heading: it.heading, sub: it.sub, unit: it.unit, image: it.image, timer: it.type ? this._timerFor(it) : null } : null,
       deadline: this.deadline, now: Date.now(), muted: this.muted, paused: this.pausedRemaining != null, pausedRemaining: this.pausedRemaining, musicMap: this.config.music || {},
       grandmaConnected: this.grandmaConnected, grandmaConnections: this.grandmaConnections, grandmaAnswered: this.grandmaAnswer != null, waitingOnGrandma: this.waitingOnGrandma, voteOpen: this.voteOpen,
-      title: this.config.title, subtitle: this.config.subtitle, grandmaName: this.config.grandmaName, grandmaPhoto: this.grandmaPhotoUrl || null, maxAnswerLength: this.config.maxAnswerLength || 80,
+      title: this.config.title, subtitle: this.config.subtitle, grandmaName: this.config.grandmaName, grandmaPhoto: this.grandmaPhotoUrl || null, maxAnswerLength: this.config.maxAnswerLength || 200, maxPromptLength: this.config.maxPromptLength || 500,
       players, leaderboard, awards: { knows: top('truthPts'), fooler: top('foolPts') },
       answeredCount: this.answers.size + (this.item && this.item.type === 'fibbage' ? this.autoTruth.size : 0), votedCount: this.votes.size, voterCount: this._voters().length, connectedCount: this._connectedPlayers().length,
       options: this.options.map((o) => (revealOK ? { key: o.key, text: o.text, authors: o.authors, isTruth: o.isTruth } : { key: o.key, text: o.text })),

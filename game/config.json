@@ -24,8 +24,8 @@
     "galleryGrandma": 1500
   },
   "pickOptions": [],
-  "maxAnswerLength": 80,
-  "maxPromptLength": 240,
+  "maxAnswerLength": 200,
+  "maxPromptLength": 500,
   "dedupeTimeoutMs": 9000,
   "imageConcurrency": 2,
   "openai": {

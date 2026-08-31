@@ -55,6 +55,7 @@ h1{font-size:clamp(40px,6vw,86px);margin:0;line-height:1.05;font-weight:900;lett
 .opts.many{grid-template-columns:repeat(3,1fr)}.opts.lots{grid-template-columns:repeat(4,1fr)}
 .opt{background:var(--card);border-radius:18px;padding:16px 20px;font-size:clamp(18px,2vw,30px);font-weight:800;text-align:left;display:flex;align-items:center;gap:14px}
 .opts.many .opt{font-size:clamp(16px,1.6vw,24px);padding:12px 16px}.opts.lots .opt{font-size:clamp(14px,1.3vw,20px);padding:10px 14px}
+.opt.long{font-size:clamp(14px,1.5vw,22px)}
 .opt .n{flex:none;width:40px;height:40px;border-radius:50%;background:var(--card2);display:grid;place-items:center;font-size:18px;color:var(--muted)}
 .pickgrid{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;max-width:1300px;margin:10px 0}
 .pickopt{background:var(--card);border-radius:14px;padding:10px 22px;font-size:clamp(18px,2vw,28px);font-weight:800}
@@ -320,7 +321,7 @@ function sorting(s) {
 function vote(s) {
   const n = s.options.length, cls = n > 12 ? 'lots' : n > 6 ? 'many' : '';
   return `${tag(s)}<h2 class="prompt small">${blank(s.item.prompt)}</h2><div class="instr">Which one is the <b class="gold">TRUTH</b>?</div>
-  <div class="opts ${cls}">${s.options.map((o, i) => `<div class="opt rise" style="animation-delay:${i * 0.07}s"><span class="n">${i + 1}</span>${esc(o.text)}</div>`).join('')}</div>
+  <div class="opts ${cls}">${s.options.map((o, i) => `<div class="opt rise ${o.text.length > 70 ? 'long' : ''}" style="animation-delay:${i * 0.07}s"><span class="n">${i + 1}</span>${esc(o.text)}</div>`).join('')}</div>
   ${s.voteOpen ? `<div class="status"><div class="cnt"><b id="cnt">${s.votedCount}</b> of <span id="tot">${s.voterCount}</span> voted</div></div>` : `<div class="readyline">👀 Read them over. Voting opens on GO: ${s.item.timer ? '' : ''}30 seconds.</div>`}`;
 }
 function reveal(s) {
