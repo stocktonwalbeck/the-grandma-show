@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MC Console</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/style.css">
+<style>
+main{padding:14px 14px 60px;max-width:680px;margin:0 auto}
+.pill{display:inline-block;background:var(--card2);border-radius:999px;padding:4px 12px;font-weight:800;font-size:13px;text-transform:uppercase;letter-spacing:.08em}
+.pill.read{background:var(--yellow);color:#000}.pill.answer{background:var(--cyan);color:#000}.pill.sorting{background:#8b5cf6}.pill.vote,.pill.galleryVote{background:var(--pink)}.pill.reveal,.pill.galleryReveal{background:var(--gold);color:#000}.pill.scores{background:var(--green);color:#000}.pill.final{background:#fff;color:#000}
+.stat{background:var(--bg2);border-radius:18px;padding:14px 16px;margin-bottom:12px}
+.stat .item{font-size:18px;font-weight:800;margin:8px 0}
+.stat .row{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-weight:700;font-size:14px;align-items:center}
+.stat .row b{color:#fff}
+.g.on{color:var(--gold)}.g.off{color:var(--red);animation:blink 1.4s infinite}
+.btn.big{font-size:24px;padding:22px}.btn.go{background:var(--green);color:#03301a;box-shadow:0 6px 0 #1f7a45;font-size:30px;padding:26px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid .btn{margin-top:10px;font-size:15px;padding:13px}.grid4{grid-template-columns:repeat(4,1fr)}.grid4 .btn{font-size:13px;padding:12px 6px}
+details{background:var(--bg2);border-radius:18px;padding:12px 16px;margin-top:12px}
+summary{font-weight:900;cursor:pointer;font-size:17px;list-style:none}summary::-webkit-details-marker{display:none}
+summary::after{content:"▾";float:right;color:var(--muted)}details[open] summary::after{content:"▴"}
+.pl{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #ffffff12;font-weight:700;font-size:15px}
+.pl .st{margin-left:auto;color:var(--muted);font-size:12px;white-space:nowrap}
+.pl .x{background:var(--card2);border-radius:8px;padding:4px 8px;font-size:12px;color:var(--red)}
+.pl.off{opacity:.45}
+.ans{display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #ffffff12;font-size:14px}
+.ans .who{flex:none;width:110px;font-weight:800;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ans .v{flex:1;font-weight:700}.ans .x{background:var(--card2);border-radius:8px;padding:3px 8px;font-size:12px;color:var(--red);flex:none}
+.ans.truth{background:#4a3a00;border-radius:10px;padding:8px;margin:4px 0}.ans.truth .who{color:var(--gold)}
+.ans.auto .v::after{content:" · matched the truth";color:var(--gold);font-size:12px}
+.pending{color:var(--muted);font-style:italic}
+.gset{display:flex;gap:8px;margin-top:8px}.gset input{font-size:15px;padding:10px}.gset button{flex:none;background:var(--gold);color:#2a1d00;border-radius:12px;padding:0 14px;font-weight:900}
+.q{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid #ffffff12;font-size:14px;align-items:flex-start;cursor:pointer}
+.q .i{color:var(--muted);width:24px;flex:none;font-weight:800}.q .ty{flex:none;font-size:11px;background:var(--card2);border-radius:6px;padding:2px 6px;text-transform:uppercase;font-weight:800;margin-top:2px}
+.q.cur{color:var(--yellow);font-weight:800}.q.done{opacity:.4}
+.link{background:#0d0b22;border-radius:12px;padding:10px;font-family:ui-monospace,Menlo,monospace;font-size:13px;word-break:break-all;margin:8px 0}
+.qrs{display:flex;gap:14px;flex-wrap:wrap}.qrs img{width:150px;border-radius:12px;background:#fff}
+.cd{font-size:28px;font-weight:900;font-variant-numeric:tabular-nums;color:var(--cyan)}.cd.paused{color:var(--yellow)}
+.err{color:var(--red);font-weight:800;margin-top:8px}
+.im{display:flex;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid #ffffff12;font-size:13px}
+.im img{width:56px;height:56px;border-radius:8px;object-fit:cover;background:#000}.im .ph{width:56px;height:56px;border-radius:8px;background:var(--card2);display:grid;place-items:center;flex:none}
+.im .t{flex:1}.im .t small{color:var(--muted);display:block}.im .retry{background:var(--card2);border-radius:8px;padding:4px 8px;font-size:12px}
+.awards{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;font-size:13px;font-weight:800}.awards span{background:var(--card);border-radius:999px;padding:5px 10px}
+.hint{color:var(--muted);font-size:13px;margin:6px 0}
+</style>
+</head>
+<body>
+<div class="offline-bar">Reconnecting...</div>
+<main>
+  <div class="stat">
+    <div><span class="pill" id="phase">lobby</span> <span class="muted" id="qn"></span> <span class="cd" id="cd" style="float:right"></span></div>
+    <div class="item" id="item"></div>
+    <div class="row" id="row"></div>
+    <div class="awards" id="awards"></div>
+  </div>
+  <button class="btn big" id="next">START THE GAME</button>
+  <div class="grid grid4" style="grid-template-columns:repeat(3,1fr)">
+    <button class="btn secondary" id="restart">↺ Restart timer</button>
+    <button class="btn secondary" id="pause">⏸ Pause</button>
+    <button class="btn secondary" id="skip">Skip ▶</button>
+  </div>
+  <div class="grid"><button class="btn secondary" id="mute">🔊 Sound on</button><button class="btn secondary" id="replay">Replay this question</button></div>
+  <div class="err" id="err"></div>
+
+  <details open id="livedet"><summary>Backstage: live answers <span class="muted" id="lc"></span></summary>
+    <div class="hint">Only you see this. Grandma's answer is gold. ✕ removes an answer before the vote (they can retype).</div>
+    <div id="live"></div>
+    <div class="gset" id="gset"><input id="gval" placeholder="Type Grandma's answer for her (if her phone dies)"><button id="gsetbtn">SET</button></div>
+  </details>
+  <details open><summary>Players (<span id="pc">0</span>)</summary><div id="players"></div></details>
+  <details id="imgdet"><summary>AI pictures (<span id="ic">0</span>)</summary><div id="images"></div></details>
+  <details><summary>Playlist</summary><div id="playlist"></div></details>
+  <details><summary>Setup: links + Grandma's QR <span class="muted" id="gcount"></span></summary><div id="setup">Loading...</div><button class="btn danger" id="dropg">🔌 Disconnect ALL Grandma phones (then rescan on hers)</button><div class="hint">Her gold code locks to the first phone that opens it; every other phone is refused. Only press this if she has to switch phones.</div></details>
+  <details><summary>Testing</summary>
+    <div class="hint">Fake players that join, write lies, vote and write picture prompts on their own, so you can rehearse alone. Remove them before the real game.</div>
+    <div class="grid"><button class="btn secondary" id="addbots">Add 4 test bots</button><button class="btn secondary" id="addbots20">Add 20 test bots</button></div>
+    <button class="btn secondary" id="rmbots">Remove all bots</button>
+    <button class="btn secondary" id="mocktoggle">🎨 Pictures: ...</button>
+    <div class="hint">Fake pictures = instant placeholder images, $0, for rehearsing the flow. Real pictures = the AI paints her face (~$0.04 each).</div>
+  </details>
+  <details><summary>Danger zone</summary>
+    <button class="btn danger" id="newgame">RESET ROOM: kick everyone, wipe everything (they rescan)</button>
+    <div class="hint">Every change autosaves. If the laptop or server dies, start it again and the game comes back exactly where it was, with the clock paused; phones reconnect on their own. <code>./start.sh --fresh</code> wipes the saved game.</div>
+  </details>
+</main>
+<script src="/common.js"></script>
+<script>
+const qs = new URLSearchParams(location.search), secret = qs.get('k') || '';
+const $ = (id) => document.getElementById(id);
+let S = null, lastPl = null, lastLive = null;
+const nextLabel = (s) => {
+  const G = s.grandmaName.toUpperCase();
+  switch (s.phase) {
+    case 'lobby': return ['START THE GAME', false, ''];
+    case 'slide': return ['NEXT', false, ''];
+    case 'read': return [`GO  ▶  start ${s.item.timer}s + music`, false, 'go'];
+    case 'answer': if (s.item.type === 'image') return ['END TIMER → SEND TO AI', false, '']; return s.grandmaAnswered ? [s.item.type === 'fibbage' ? 'END TIMER → VOTING' : 'END TIMER → REVEAL', false, ''] : [`WAITING ON ${G}... (or type her answer below)`, true, ''];
+    case 'sorting': return ['SORTING ANSWERS...', true, ''];
+    case 'vote': return s.voteOpen ? ['END VOTING → REVEAL', false, ''] : ['GO  ▶  open voting (30s + music)', false, 'go'];
+    case 'reveal': return s.step < s.stepCount - 1 ? [`REVEAL NEXT (${s.step + 2}/${s.stepCount})`, false, ''] : ['SHOW SCORES', false, ''];
+    case 'galleryReveal': return s.step < s.stepCount - 1 ? [`REVEAL ${s.grandmaName.toUpperCase()}'S PICK`, false, ''] : s.gallery && s.gallery.batch < s.gallery.batches - 1 ? [`NEXT GROUP (${s.gallery.batch + 2}/${s.gallery.batches})`, false, ''] : ['SHOW SCORES', false, ''];
+    case 'scores': case 'imageQueued': return s.idx + 1 < s.total ? ['NEXT QUESTION', false, ''] : ['FINISH → TROPHIES', false, ''];
+    case 'galleryWait': return [`START GALLERY WITH ${s.imageProgress.done + s.imageProgress.failed}/${s.imageProgress.total} DONE`, false, ''];
+    case 'galleryShow': { const g = s.gallery; return s.galleryStep < g.count - 1 ? [`NEXT PICTURE (${s.galleryStep + 2}/${g.count}, group ${g.batch + 1}/${g.batches})`, false, ''] : [`START GROUP ${g.batch + 1} VOTE`, false, '']; }
+    case 'galleryVote': return ['END VOTING → RESULTS', false, ''];
+    case 'final': return ['GAME OVER', true, ''];
+  }
+  return ['NEXT', false, ''];
+};
+const P = (s, id) => s.players.find((p) => p.id === id) || { name: '???', emoji: '👻' };
+function liveHtml(s) {
+  const G = esc(s.grandmaName);
+  if (['read', 'answer', 'sorting'].includes(s.phase)) {
+    const isImg = s.item.type === 'image';
+    const gl = isImg ? `<div class="ans truth"><span class="who">👑 ${G}</span><span class="v pending">is the judge on this one</span></div>` : `<div class="ans truth"><span class="who">👑 ${G}</span><span class="v ${s.grandmaAnswer == null ? 'pending' : ''}">${s.grandmaAnswer == null ? 'nothing yet...' : esc(s.grandmaAnswer)}</span>${s.grandmaAnswer != null ? `<button class="x" data-rm="grandma">✕</button>` : ''}</div>`;
+    const rows = s.players.filter((p) => !p.bot || true).map((p) => {
+      const a = s.liveAnswers.find((x) => x.pid === p.id);
+      const auto = s.autoTruthIds.includes(p.id);
+      const fmt = (v) => v && typeof v === 'object' ? `${v.memory ? '📖 ' + v.memory + ' · ' : ''}🎨 ${v.scene}` : v;
+      return `<div class="ans ${auto ? 'auto' : ''}"><span class="who">${p.photo ? `<img src="${esc(p.photo)}" style="width:18px;height:18px;border-radius:50%;object-fit:cover;vertical-align:middle">` : p.emoji} ${esc(p.name)}</span><span class="v ${a ? '' : 'pending'}">${a ? esc(fmt(a.value)) : auto ? '(writing a lie)' : p.connected ? 'typing...' : 'offline'}</span>${a ? `<button class="x" data-rm="${p.id}">✕</button>` : ''}</div>`;
+    }).join('');
+    return gl + rows;
+  }
+  if (s.phase === 'vote') {
+    return `<div class="hint">Options on the TV, who wrote them, and who is voting for what.</div>` + s.optionsFull.map((o) => {
+      const voters = s.liveVotes.filter((v) => v.key === o.key).map((v) => P(s, v.pid).name);
+      return `<div class="ans ${o.isTruth ? 'truth' : ''}"><span class="who">${o.isTruth ? '👑 TRUTH' : esc(o.authors.map((a) => P(s, a).name).join(' & '))}</span><span class="v">${esc(o.text)}${voters.length ? ` <span class="muted">← ${esc(voters.join(', '))}</span>` : ''}</span></div>`;
+    }).join('');
+  }
+  if (s.phase === 'galleryVote') {
+    return s.images.filter((im) => !s.gallery || im.group === s.gallery.group || (im.group < 0 && s.gallery.group === 0)).map((im, i) => { const voters = s.liveVotes.filter((v) => v.key === im.id).map((v) => P(s, v.pid).name); return `<div class="ans ${s.grandmaPick === im.id ? 'truth' : ''}"><span class="who">#${i + 1} ${esc(P(s, im.pid).name)}</span><span class="v">${esc(im.prompt)}${voters.length ? ` <span class="muted">← ${esc(voters.join(', '))}</span>` : ''}${s.grandmaPick === im.id ? " <b>👑 Grandma&#39;s pick</b>" : ''}</span></div>`; }).join('');
+  }
+  if (['reveal', 'scores'].includes(s.phase) && s.grandmaAnswer != null) return `<div class="ans truth"><span class="who">👑 ${G} said</span><span class="v">${esc(s.grandmaAnswer)}</span></div>`;
+  return `<div class="hint">Answers show up here live during a question.</div>`;
+}
+function render(s) {
+  S = s;
+  $('phase').textContent = s.paused ? 'PAUSED' : s.phase; $('phase').className = 'pill ' + s.phase;
+  $('qn').textContent = s.item && s.qnum ? `question ${s.qnum} of ${s.qtotal} (item ${s.idx + 1}/${s.total})` : '';
+  $('item').textContent = s.item ? (s.item.prompt || s.item.heading || s.item.caption || s.item.type) + (s.item.double ? '  [DOUBLE]' : '') + (s.item.timer && ['read', 'answer'].includes(s.phase) ? `  [${s.item.timer}s]` : '') : s.phase === 'final' ? 'Game over' : 'Waiting in the lobby';
+  const g = `<span class="g ${s.grandmaConnected ? 'on' : 'off'}">👑 ${esc(s.grandmaName)} ${s.grandmaConnected ? 'connected' : 'NOT connected'}</span>` + (s.grandmaConnections > 1 ? `<span class="g off">⚠️ ${s.grandmaConnections} phones are on Grandma's link! Use "Disconnect all Grandma phones" under Setup and rescan with hers only.</span>` : '');
+  $('gcount').textContent = s.grandmaConnections > 1 ? `(⚠️ ${s.grandmaConnections} Grandma phones)` : '';
+  const ga = ['read', 'answer'].includes(s.phase) && s.item.type !== 'image' ? `<span>${s.grandmaAnswered ? '<b>✅ her answer is locked in</b>' : 'her answer: <b>not yet</b>'}</span>` : '';
+  const cnt = s.phase === 'answer' ? `<span>answers <b>${s.answeredCount}/${s.connectedCount}</b></span>` : s.phase === 'vote' ? `<span>votes <b>${s.votedCount}/${s.voterCount}</b></span>` : s.phase === 'galleryVote' ? `<span>votes <b>${s.votedCount}/${s.connectedCount}</b> · ${s.grandmaPick ? 'Grandma picked' : 'Grandma deciding'}</span>` : '';
+  const sort = s.sortInfo && ['vote', 'reveal'].includes(s.phase) && s.item.type === 'fibbage' ? `<span>sorted by <b>${esc(s.sortInfo.source)}</b>: ${s.sortInfo.lies} answers → ${s.sortInfo.groups} options</span>` : '';
+  const imgs = s.imageProgress.total ? `<span>pictures <b>${s.imageProgress.done}/${s.imageProgress.total}</b>${s.imageProgress.failed ? ` (${s.imageProgress.failed} failed)` : ''}</span>` : '';
+  $('row').innerHTML = g + ga + cnt + sort + imgs + (s.waitingOnGrandma ? '<span class="g off">timer done, waiting on her answer</span>' : '');
+  $('awards').innerHTML = (s.awards.knows ? `<span>🧠 ${s.awards.knows.emoji} ${esc(s.awards.knows.name)} ${s.awards.knows.value}</span>` : '') + (s.awards.fooler ? `<span>🎭 ${s.awards.fooler.emoji} ${esc(s.awards.fooler.name)} ${s.awards.fooler.value}</span>` : '');
+  const [label, dis, cls] = nextLabel(s); $('next').textContent = label; $('next').disabled = dis; $('next').className = 'btn big ' + cls;
+  const timed = ['answer', 'vote', 'galleryVote'].includes(s.phase);
+  $('restart').disabled = !timed || (s.phase === 'vote' && !s.voteOpen); $('pause').disabled = !timed || (!s.deadline && !s.paused);
+  $('pause').textContent = s.paused ? '▶ Resume' : '⏸ Pause';
+  $('replay').disabled = s.idx < 0 || s.phase === 'final';
+  $('skip').disabled = s.phase === 'lobby' || s.phase === 'final';
+  $('mute').textContent = s.muted ? '🔇 Sound off' : '🔊 Sound on';
+  $('gset').classList.toggle('hide', !(['read', 'answer'].includes(s.phase) && s.item.type !== 'image'));
+  const liveKey = JSON.stringify([s.phase, s.idx, s.liveAnswers, s.grandmaAnswer, s.liveVotes, s.autoTruthIds, s.grandmaPick, s.players.map((p) => p.id + p.connected)]);
+  if (liveKey !== lastLive) { lastLive = liveKey; $('live').innerHTML = liveHtml(s); $('live').querySelectorAll('[data-rm]').forEach((b) => (b.onclick = () => client.send({ t: 'mc', cmd: 'removeAnswer', arg: b.dataset.rm }))); }
+  $('lc').textContent = s.phase === 'answer' ? `(${s.answeredCount}/${s.connectedCount})` : '';
+  $('pc').textContent = s.players.length;
+  const groupsHtml = s.groups ? `<div class="hint">Groups (locked at START, used for the picture round):</div>` + s.groups.map((g) => `<div class="ans"><span class="who">Group ${g.i + 1}</span><span class="v">${g.pids.map((id) => esc(P(s, id).name)).join(', ') || '(empty)'}${g.prompt ? `<br><span class="muted">"${esc(g.prompt)}"</span>` : ''}</span></div>`).join('') : `<div class="hint">Groups get locked when you press START (${s.players.length} players → groups of ~4).</div>`;
+  $('players').innerHTML = groupsHtml + s.players.map((p) => `<div class="pl ${p.connected ? '' : 'off'}"><span class="avatar" style="padding:2px 6px 2px 2px;margin:0">${avatarInner(p)}</span><span>${esc(p.name)}${p.bot ? ' <span class="muted">(bot)</span>' : ''}</span><span class="st">${p.score} pts · 🧠${p.truthPts} 🎭${p.foolPts}${s.phase === 'answer' ? (p.answered ? ' · ✅' : ' · …') : ['vote', 'galleryVote'].includes(s.phase) ? (p.voted ? ' · 🗳️' : ' · …') : ''}${p.connected ? '' : ' · offline'}</span><button class="x" data-id="${p.id}">kick</button></div>`).join('') || '<div class="muted">Nobody yet. Show them the QR on the TV.</div>';
+  $('players').querySelectorAll('.x[data-id]').forEach((b) => (b.onclick = () => { const p = s.players.find((x) => x.id === b.dataset.id); if (confirm(`Kick ${p ? p.name : 'this player'}?`)) client.send({ t: 'mc', cmd: 'kick', arg: b.dataset.id }); }));
+  $('ic').textContent = s.images.length;
+  $('images').innerHTML = s.images.map((im) => { const p = s.players.find((x) => x.id === im.pid); return `<div class="im">${im.status === 'done' ? `<a href="${esc(im.url)}" target="_blank"><img src="${esc(im.url)}"></a>` : `<div class="ph">${im.status === 'failed' ? '🚫' : '⏳'}</div>`}<div class="t"><b>${p ? p.emoji + ' ' + esc(p.name) : '?'}</b> · group ${im.group + 1} · ${im.status}${im.shown ? ' · shown' : ''}<small>${esc(im.prompt)}</small>${im.error ? `<small style="color:var(--red)">${esc(im.error)}</small>` : ''}</div>${im.status === 'failed' ? `<button class="retry" data-id="${im.id}">retry</button>` : ''}</div>`; }).join('') || '<div class="muted">No pictures yet. They appear after the picture round, with who wrote each prompt.</div>';
+  $('images').querySelectorAll('.retry').forEach((b) => (b.onclick = () => client.send({ t: 'mc', cmd: 'retryImage', arg: b.dataset.id })));
+  const plKey = s.idx + '|' + s.playlist.length;
+  if (plKey !== lastPl) {
+    lastPl = plKey;
+    $('playlist').innerHTML = s.playlist.map((q) => `<div class="q ${q.i === s.idx ? 'cur' : q.i < s.idx ? 'done' : ''}" data-i="${q.i}"><span class="i">${q.i + 1}</span><span class="ty">${q.type}</span><span>${esc(q.label)}${q.double ? ' [x2]' : ''}${q.timer ? ` [${q.timer}s]` : ''}</span></div>`).join('');
+    $('playlist').querySelectorAll('.q').forEach((el) => (el.onclick = () => { if (confirm(`Jump to item ${Number(el.dataset.i) + 1}? (skips the current one, no points awarded)`)) client.send({ t: 'mc', cmd: 'goto', arg: Number(el.dataset.i) }); }));
+  }
+}
+function tick() {
+  if (S && S.paused) { $('cd').textContent = '⏸ ' + Math.ceil(S.pausedRemaining / 1000) + 's'; $('cd').className = 'cd paused'; }
+  else if (S && S.deadline) { const r = Math.max(0, S.deadline - client.now()); $('cd').textContent = Math.ceil(r / 1000) + 's'; $('cd').className = 'cd'; }
+  else $('cd').textContent = '';
+  requestAnimationFrame(tick);
+}
+tick();
+const cmd = (c, a) => client.send({ t: 'mc', cmd: c, arg: a });
+let nextLock = 0;
+$('next').onclick = () => { const now = Date.now(); if (now - nextLock < 700) return; nextLock = now; cmd(S && (S.phase === 'read' || (S.phase === 'vote' && !S.voteOpen)) ? 'go' : 'next'); };
+$('dropg').onclick = () => { if (confirm('Disconnect EVERY phone on the Grandma link? The next phone to open the gold code becomes hers.')) cmd('newGrandmaPhone'); };
+$('restart').onclick = () => cmd('restartTimer');
+$('pause').onclick = () => cmd('pause');
+$('mute').onclick = () => cmd('mute');
+$('skip').onclick = () => { if (confirm('Skip this question? Nobody gets points for it; all scores stay exactly as they are.')) cmd('skip'); };
+$('replay').onclick = () => { if (confirm('Replay this question from the top? Answers so far are thrown away.')) cmd('replay'); };
+$('newgame').onclick = () => { if (confirm('RESET THE ROOM? Everyone gets kicked, all scores are wiped, and every phone has to scan again.') && confirm('Last check. This cannot be undone. Reset the room?')) cmd('resetRoom'); };
+$('addbots').onclick = () => cmd('addBots', 4);
+$('mocktoggle').onclick = () => { cmd('mockImages'); setTimeout(loadSetup, 300); };
+$('addbots20').onclick = () => cmd('addBots', 20);
+$('rmbots').onclick = () => cmd('removeBots');
+$('gsetbtn').onclick = () => { const v = $('gval').value.trim(); if (!v) return; if (confirm(`Set ${S.grandmaName}'s answer to "${v}"?`)) { cmd('grandmaAnswer', v); $('gval').value = ''; } };
+document.addEventListener('keydown', (e) => { if (e.code === 'Space' || e.code === 'ArrowRight') { if (document.activeElement && document.activeElement.tagName === 'INPUT') return; e.preventDefault(); $('next').click(); } });
+function copyText(t) {
+  const done = () => toast('Copied. Paste it into a text.');
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done).catch(() => fallbackCopy(t, done));
+  else fallbackCopy(t, done);
+}
+function fallbackCopy(t, done) { const ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); done(); } catch { toast('Long-press the link to copy it'); } ta.remove(); }
+async function loadSetup() {
+  try {
+    const a = await (await fetch('/api/admin?k=' + encodeURIComponent(secret))).json();
+    if (a.error) { $('setup').textContent = a.error; return; }
+    $('mocktoggle').textContent = a.mockImages ? '🎭 Pictures: FAKE (tap for real AI)' : '🎨 Pictures: REAL AI (tap for fake test mode)';
+    $('setup').innerHTML = `<p class="muted" style="margin:6px 0">Scan the gold one with ${esc(S ? S.grandmaName : 'Grandma')}'s phone. Nobody else gets that link.</p>
+      <div class="qrs"><div><img src="${a.grandmaQr}"><div class="muted" style="font-size:12px;text-align:center">👑 Grandma</div></div><div><img src="${a.mcQr}"><div class="muted" style="font-size:12px;text-align:center">MC (this page)</div></div></div>
+      <div class="muted" style="font-size:12px;margin-top:10px">Tap any link to copy it. ${a.publicMode ? 'PUBLIC links: work from anywhere, but they change every time the game is started, so send them after you start.' : 'Same-wifi links.'}</div>
+      <div class="muted" style="font-size:12px;margin-top:6px">Players join here (this is what the TV QR encodes)</div><div class="link" data-copy="${esc(a.joinUrl)}">${esc(a.joinUrl)}</div>
+      <div class="muted" style="font-size:12px">Remote family: watch the TV on their own screen (view only)</div><div class="link" data-copy="${esc(a.remoteTvUrl)}">${esc(a.remoteTvUrl)}</div>
+      <div class="muted" style="font-size:12px">Grandma's link (same as her gold QR, in case scanning is awkward)</div><div class="link" data-copy="${esc(a.grandmaUrl)}">${esc(a.grandmaUrl)}</div>
+      <div class="muted" style="font-size:12px">TV page (the laptop opens this itself; space = GO / next, M = mute, S = codes)</div><div class="link" data-copy="${esc(a.tvUrl)}">${esc(a.tvUrl)}</div>
+      <div class="muted" style="font-size:12px;margin-top:8px">AI: answer sorting ${a.ai.dedupe ? 'ON (' + esc(a.ai.dedupe) + ')' : 'local only'} · pictures ${a.mockImages ? '🎭 FAKE (test mode, $0)' : a.ai.images ? esc(a.ai.images) + (a.ai.costPerImage ? ' ~$' + a.ai.costPerImage + '/image' : '') + (a.ai.refPhoto ? ' · ref photo ON' : '') : 'OFF'}</div>
+      <div class="muted" style="font-size:12px">Network: ${a.ips.map((i) => esc(i.name + '=' + i.address)).join(', ') || 'none found'}</div>`;
+    $('setup').querySelectorAll('[data-copy]').forEach((el) => (el.onclick = () => copyText(el.dataset.copy)));
+  } catch (e) { $('setup').textContent = 'Could not load setup info'; }
+}
+loadSetup();
+const client = GameClient({ role: 'mc', secret, onState: render, onEvent: (e) => {
+  if (e.t === 'close') document.body.classList.add('offline');
+  if (e.t === 'open') { document.body.classList.remove('offline'); loadSetup(); }
+  if (e.t === 'error') { $('err').textContent = e.error; $('next').disabled = true; }
+  if (e.t === 'ack') { $('err').textContent = e.ok ? '' : e.error || 'Error'; if (!e.ok) toast(e.error || 'Error'); }
+} });
+</script>
+</body>
+</html>

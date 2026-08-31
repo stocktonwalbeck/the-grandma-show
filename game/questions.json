@@ -1,0 +1,361 @@
+{
+  "_readme": [
+    "playlist = what gets played, in order. Edit freely, restart the server after.",
+    "Types: fibbage | number | pick | image (everyone writes an AI picture prompt; players are split into groups of ~4 and each group gets one of the 'prompts'; Grandma judges later) | gallery (shows the pictures group by group: each picture, a vote, crowd favorite + Grandma's pick, then the next group) | photo | slide.",
+    "Per-question options: timer (seconds, overrides the default), double: true (double points), tone: 'guess' (phones say 'write what you think she said' instead of 'write a lie', for the meaningful ones), options: [...] for pick questions.",
+    "pick questions with no options use pickOptions from game/config.json. PUT HER 12 KIDS' NAMES THERE. If that is empty too, it falls back to the players' names.",
+    "Put the image question 2 questions before the gallery so the AI has time to draw (about 15 to 30 seconds per picture, 3 at a time).",
+    "spares = more questions to swap in. Roughly 70% funny, 30% meaningful.",
+    "image items: use 'prompts' (a list, one per group, reused in order if there are more groups) and 'prompt' (what the TV says). Put the gallery 2-4 questions later so the AI has time (about 20s per picture, 3 at a time: 16 pictures ~ 2 minutes)."
+  ],
+  "playlist": [
+    {
+      "type": "fibbage",
+      "prompt": "If Grandma got arrested tomorrow, it would be for ____."
+    },
+    {
+      "type": "fibbage",
+      "prompt": "The thing Grandma has spent the most hours of her life looking for is ____."
+    },
+    {
+      "type": "fibbage",
+      "prompt": "The smell in Grandma's car is best described as ____."
+    },
+    {
+      "type": "number",
+      "prompt": "How many times has Grandma been pulled over by the police?"
+    },
+    {
+      "type": "image",
+      "timer": 120,
+      "prompt": "Picture round. Each group creates the picture that best describes their theme.",
+      "prompts": [
+        "The picture that best describes: Grandma at her most chaotic",
+        "The picture that best describes: Grandma's dream Saturday",
+        "The picture that best describes: Grandma's version of heaven",
+        "The picture that best describes: a classic family moment"
+      ]
+    },
+    {
+      "type": "fibbage",
+      "prompt": "Sixty years in, Grandma still cannot ____."
+    },
+    {
+      "type": "pick",
+      "prompt": "Which of her kids gave Grandma the most gray hairs?"
+    },
+    {
+      "type": "gallery",
+      "prompt": "The Gallery"
+    },
+    {
+      "type": "fibbage",
+      "tone": "guess",
+      "prompt": "Grandma's honest advice for a happy life is ____."
+    },
+    {
+      "type": "fibbage",
+      "tone": "guess",
+      "double": true,
+      "prompt": "The thing Grandma is most proud of that she never brags about is ____."
+    }
+  ],
+  "spares": {
+    "funny_fibbage": [
+      {
+        "type": "fibbage",
+        "prompt": "The dance move Grandma busts out in public, no matter who is watching, is ____."
+      },
+      {
+        "type": "fibbage",
+        "prompt": "\"Blauer Power\" is the family's name for ____."
+      },
+      {
+        "type": "fibbage",
+        "prompt": "The Blauer family is famous for three things: body odor, hairlines, and ____."
+      },
+      {
+        "type": "fibbage",
+        "prompt": "The last time Grandma farted in public, she blamed ____."
+      },
+      {
+        "type": "fibbage",
+        "prompt": "Grandma's number one rule for any piece of clothing is ____."
+      },
+      {
+        "type": "fibbage",
+        "prompt": "The last thing Grandma lost was ____."
+      },
+      {
+        "type": "fibbage",
+        "prompt": "The perfect gift for Grandma is ____. (Trick question. She will return it.)"
+      },
+      {
+        "type": "fibbage",
+        "prompt": "The restaurant Grandma loved so much that it went out of business: ____."
+      },
+      {
+        "type": "fibbage",
+        "prompt": "Grandma's go-to order at McGrath's Fish House was ____."
+      },
+      {
+        "type": "fibbage",
+        "prompt": "The one food Grandma will not eat no matter who cooked it: ____."
+      },
+      {
+        "type": "fibbage",
+        "prompt": "Grandma's idea of a perfect Saturday is ____."
+      },
+      {
+        "type": "fibbage",
+        "prompt": "The essential oil Grandma's parents swore could cure anything was ____."
+      },
+      {
+        "type": "fibbage",
+        "prompt": "The most embarrassing thing Grandma has done in a movie theater is ____."
+      },
+      {
+        "type": "fibbage",
+        "prompt": "Grandma's real reason for adopting kid number eight: ____."
+      },
+      {
+        "type": "fibbage",
+        "prompt": "If Grandma had a warning label, it would say: ____."
+      },
+      {
+        "type": "fibbage",
+        "prompt": "The word Grandma has been saying wrong her entire life is ____."
+      },
+      {
+        "type": "fibbage",
+        "prompt": "The thing Grandma yells at the TV about most is ____."
+      },
+      {
+        "type": "fibbage",
+        "prompt": "Grandma's biggest lie to HER parents as a teenager was ____."
+      },
+      {
+        "type": "fibbage",
+        "prompt": "The weirdest thing in Grandma's purse right now is ____."
+      },
+      {
+        "type": "fibbage",
+        "prompt": "The celebrity Grandma would leave all 12 of us for is ____."
+      },
+      {
+        "type": "fibbage",
+        "prompt": "If Grandma started a business it would sell ____."
+      },
+      {
+        "type": "fibbage",
+        "prompt": "The item Grandma 'borrowed' years ago and never gave back is ____."
+      },
+      {
+        "type": "fibbage",
+        "prompt": "The chore Grandma would pay a grandkid $100 to never do again is ____."
+      },
+      {
+        "type": "fibbage",
+        "prompt": "At 60, the one thing Grandma refuses to give up is ____."
+      },
+      {
+        "type": "fibbage",
+        "prompt": "The massage therapist's nickname for Grandma is ____."
+      },
+      {
+        "type": "fibbage",
+        "prompt": "What Grandma is actually doing when she says she is 'resting her eyes': ____."
+      }
+    ],
+    "meaningful_fibbage": [
+      {
+        "type": "fibbage",
+        "prompt": "The moment Grandma knew she wanted to adopt was ____.",
+        "tone": "guess"
+      },
+      {
+        "type": "fibbage",
+        "prompt": "The best advice Grandma's dad ever gave her was ____.",
+        "tone": "guess"
+      },
+      {
+        "type": "fibbage",
+        "prompt": "Grandma's favorite memory of her mom is ____.",
+        "tone": "guess"
+      },
+      {
+        "type": "fibbage",
+        "prompt": "The hardest year of Grandma's life was ____, and what got her through it was ____.",
+        "tone": "guess"
+      },
+      {
+        "type": "fibbage",
+        "prompt": "The one thing Grandma wants her grandkids to remember about her is ____.",
+        "tone": "guess"
+      },
+      {
+        "type": "fibbage",
+        "prompt": "The thing Grandma would tell her 20-year-old self is ____.",
+        "tone": "guess"
+      },
+      {
+        "type": "fibbage",
+        "prompt": "Grandma's favorite flower is ____ because ____.",
+        "tone": "guess"
+      },
+      {
+        "type": "fibbage",
+        "prompt": "The place Grandma feels most at peace is ____.",
+        "tone": "guess"
+      }
+    ],
+    "number": [
+      {
+        "type": "number",
+        "prompt": "How many pairs of stretchy polyester pants does Grandma own?"
+      },
+      {
+        "type": "number",
+        "prompt": "How many of her 12 kids' middle names can Grandma say in a row without a mistake? (She'll prove it after.)"
+      },
+      {
+        "type": "number",
+        "prompt": "How many massages has Grandma had this year?"
+      },
+      {
+        "type": "number",
+        "prompt": "How many gifts has Grandma returned in the last year? Be honest."
+      },
+      {
+        "type": "number",
+        "prompt": "How many times has Grandma been pulled over by the police?"
+      },
+      {
+        "type": "number",
+        "prompt": "How old was Grandma when she had her first kiss?"
+      },
+      {
+        "type": "number",
+        "prompt": "How many hours of sleep did Grandma get in the closet last night?"
+      },
+      {
+        "type": "number",
+        "prompt": "Without counting: how many grandkids does Grandma THINK she has?"
+      },
+      {
+        "type": "number",
+        "prompt": "On a scale of 1 to 10, how much does Grandma ACTUALLY enjoy babysitting?"
+      },
+      {
+        "type": "number",
+        "prompt": "How many restaurants has Grandma loved into bankruptcy?"
+      },
+      {
+        "type": "number",
+        "prompt": "How old is Grandma in this photo?",
+        "image": "photos/example.jpg",
+        "_note": "drop a photo in public/photos/ and set image"
+      }
+    ],
+    "pick": [
+      {
+        "type": "pick",
+        "prompt": "Which kid does Grandma secretly think is her favorite?"
+      },
+      {
+        "type": "pick",
+        "prompt": "Which kid was the biggest troublemaker growing up?"
+      },
+      {
+        "type": "pick",
+        "prompt": "Which kid would Grandma bail out of jail first?"
+      },
+      {
+        "type": "pick",
+        "prompt": "Which kid is the worst at texting Grandma back?"
+      },
+      {
+        "type": "pick",
+        "prompt": "Which kid inherited the most Blauer body odor?"
+      },
+      {
+        "type": "pick",
+        "prompt": "Which kid inherited the Blauer hairline?"
+      },
+      {
+        "type": "pick",
+        "prompt": "Which kid has the most Blauer Power?"
+      },
+      {
+        "type": "pick",
+        "prompt": "Which kid is most likely to call Grandma at 2am?"
+      },
+      {
+        "type": "pick",
+        "prompt": "Which kid's cooking would Grandma politely decline?"
+      },
+      {
+        "type": "pick",
+        "prompt": "Which kid does Grandma think dances worse than she does?"
+      },
+      {
+        "type": "pick",
+        "prompt": "Which kid would Grandma trust to plan her funeral? (Sorry.)"
+      },
+      {
+        "type": "pick",
+        "prompt": "Which kid made Grandma cry the most? (Good tears count.)"
+      }
+    ],
+    "image": [
+      {
+        "type": "image",
+        "prompt": "Picture round two. New memory themes.",
+        "timer": 120,
+        "prompts": [
+          "A time Grandma saved the day",
+          "A memory of Grandma and food",
+          "The most embarrassing Grandma moment you witnessed",
+          "A memory of Grandma from before you were born (as you imagine it)"
+        ]
+      },
+      {
+        "type": "image",
+        "prompt": "GRANDKIDS ONLY picture round. Grown-ups, hands off.",
+        "timer": 120,
+        "prompts": [
+          "Your favorite memory with Grandma",
+          "Grandma doing the silliest thing you can think of"
+        ]
+      },
+      {
+        "type": "gallery",
+        "prompt": "The Grandma Gallery, round two"
+      }
+    ],
+    "photo": [
+      {
+        "type": "photo",
+        "src": "photos/example.jpg",
+        "caption": "Grandma, age 7, already plotting something."
+      }
+    ],
+    "slide": [
+      {
+        "type": "slide",
+        "heading": "Intermission",
+        "sub": "Go get cake. Be back in 3 minutes."
+      }
+    ],
+    "imageThemes": [
+      "The picture that best describes: Grandma's driving",
+      "The picture that best describes: Grandma's anxiety",
+      "The picture that best describes: a Blauer family reunion",
+      "The picture that best describes: Grandma babysitting all the grandkids at once",
+      "The picture that best describes: Grandma's relationship with returns and refunds",
+      "The picture that best describes: Grandma at 90",
+      "A memory of Grandma that still makes you laugh",
+      "A memory only this family would understand"
+    ]
+  }
+}

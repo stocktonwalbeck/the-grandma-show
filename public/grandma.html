@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Grandma's Phone 👑</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/style.css">
+<style>
+body{--bg:#2a1d00;--bg2:#3d2b00;--card:#4a3600;--card2:#5c4400;--muted:#d9c27a;background:var(--bg)}
+.topbar{background:var(--bg2)}.crown{font-size:80px;line-height:1}
+.card{font-size:18px}.card h2{font-size:26px}.card .prompt{font-size:26px}
+.btn{background:var(--gold);color:#2a1d00;box-shadow:0 6px 0 #a67c00}.btn:active{box-shadow:0 2px 0 #a67c00}
+.btn.secondary{background:var(--card2);color:#fff;box-shadow:0 6px 0 #2a1d00}
+input{border-color:var(--card2)}input:focus{border-color:var(--gold)}
+.choice{background:var(--card);box-shadow:0 5px 0 #2a1d00}
+.waitbanner{margin-bottom:14px;font-size:20px}
+.imggrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.imggrid button{position:relative;padding:0;border-radius:14px;overflow:hidden;background:var(--card);aspect-ratio:1;box-shadow:0 4px 0 #2a1d00}
+.imggrid button img{width:100%;height:100%;object-fit:cover;display:block}
+.imggrid button .n{position:absolute;left:8px;top:8px;background:#000c;color:#fff;font-weight:900;border-radius:999px;width:30px;height:30px;display:grid;place-items:center;font-size:14px}
+.imggrid button .fail{position:absolute;inset:0;display:grid;place-items:center;padding:10px;font-size:12px;color:var(--muted);font-weight:700}
+</style>
+</head>
+<body class="phone">
+<div class="offline-bar">Reconnecting...</div>
+<div class="topbar" id="topbar"><span>👑 <b id="gname">Grandma</b>'s phone</span><div id="ring" class="ring sm hide"><span class="ring-num"></span></div></div>
+<main id="app"></main>
+<script src="/common.js"></script>
+<script>
+const qs = new URLSearchParams(location.search), secret = qs.get('k') || '';
+const app = document.getElementById('app');
+let S = null, lastKey = null, editing = false, dead = false;
+let ring = TimerRing(document.getElementById('ring'));
+const card = (inner) => `<div class="card pop">${inner}</div>`;
+function answerForm(s) {
+  const it = s.item, G = esc(s.grandmaName);
+  const wait = s.waitingOnGrandma ? `<div class="waitbanner">⏰ TIME'S UP. EVERYONE IS WAITING ON YOUR ANSWER 😂</div>` : '';
+  const early = s.phase === 'read' ? `<p class="hint">You can start now, while the MC reads. Nobody sees this.</p>` : `<p class="hint">Same clock as everyone else. The vote can't start without you.</p>`;
+  if (it.type === 'image') return card(`<div class="crown">🧑‍⚖️</div><h2>You're the judge on this one.</h2><p>Everyone is describing a picture of you for the AI to draw, in groups. You'll pick a winner in each group.</p>`);
+  if (s.grandmaAnswer != null && !editing) return card(`<div class="lock">✅</div><h2>Locked in</h2><div class="mine">${esc(s.grandmaAnswer)}</div><p class="muted">${s.phase === 'read' ? 'Waiting for the MC to say GO.' : 'Now everyone else is making things up about you.'}</p><button class="btn secondary" id="edit">Change it</button>`);
+  const prev = editing && s.grandmaAnswer != null ? s.grandmaAnswer : '';
+  if (it.type === 'fibbage') return card(`${wait}<div class="qtag">${it.tone === 'guess' ? 'Your answer' : 'Type the truth'}</div><h2 class="prompt">${blank(it.prompt)}</h2>${early}<p class="hint">${it.tone === 'guess' ? 'Say it your way. Short is fine.' : 'Fill in the blank honestly. Short is fine.'}</p><input id="ans" maxlength="${s.maxAnswerLength}" placeholder="${it.tone === 'guess' ? 'your answer...' : 'the truth...'}" autocomplete="off" value="${esc(prev)}"><div class="cc"><span id="cc">${prev.length}</span>/${s.maxAnswerLength}</div><button class="btn" id="submit">${it.tone === 'guess' ? "THAT'S MY ANSWER" : "THAT'S THE TRUTH"}</button>`);
+  if (it.type === 'number') return card(`${wait}<div class="qtag">Your real number</div><h2 class="prompt">${esc(it.prompt)}</h2>${early}<input id="ans" type="number" inputmode="decimal" placeholder="the real number" value="${esc(prev)}"><button class="btn" id="submit">THAT'S THE TRUTH</button>`);
+  return card(`${wait}<div class="qtag">Your pick</div><h2 class="prompt">${esc(it.prompt)}</h2>${early}<div class="choices">${s.pickOptions.map((o) => `<button class="choice" data-v="${esc(o)}">${esc(o)}</button>`).join('')}</div>`);
+}
+function phase(s) {
+  const G = esc(s.grandmaName);
+  switch (s.phase) {
+    case 'lobby': return card(`<div class="crown">👑</div><h2>Hi ${G}. You're the judge.</h2><p>When a question pops up, type the <b class="gold">TRUE</b> answer. Everyone else is going to lie about you.</p><p class="muted">Don't show anyone your phone. Be honest. Or don't, it's your birthday.</p>`);
+    case 'slide': return card(`<div class="crown">👀</div><h2>Look at the TV</h2>`);
+    case 'read': case 'answer': return answerForm(s);
+    case 'sorting': return card(`<div class="crown">🧹</div><h2>Sorting their nonsense.</h2>`);
+    case 'vote': return card(`<div class="crown">😏</div><h2>${s.voteOpen ? "They're voting on your life right now." : 'Their lies are up on the TV.'}</h2><p class="muted">Watch the TV. Enjoy it.</p>`);
+    case 'reveal': return card(`<div class="crown">👀</div><h2>Watch the TV</h2>`);
+    case 'scores': return card(`<div class="crown">🍿</div><h2>Next one's coming.</h2>`);
+    case 'imageQueued': return card(`<div class="crown">🎨</div><h2>The AI is drawing you.</h2><p class="muted">${s.imageProgress.total} pictures. You'll judge them soon.</p>`);
+    case 'galleryWait': case 'galleryShow': return card(`<div class="crown">🖼️</div><h2>Watch the TV.</h2><p class="muted">${s.gallery ? `Group ${s.gallery.group + 1} of ${s.gallery.batches}. ` : ''}Judge silently. Your pick is worth triple.</p>`);
+    case 'galleryVote': {
+      if (s.grandmaPick) return card(`<div class="lock">✅</div><h2>You've chosen.</h2><p class="muted">Watch the TV.</p>`);
+      return card(`<div class="qtag">Group ${s.gallery.group + 1} of ${s.gallery.batches}</div><h2>Pick your favorite</h2><p class="hint">Your pick is worth 1500 to whoever wrote it.</p><div class="imggrid">${s.images.map((im, i) => `<button data-k="${im.id}"><span class="n">${i + 1}</span>${im.status === 'done' ? `<img src="${esc(im.url)}" alt="">` : `<div class="fail">🚫 "${esc(im.prompt.slice(0, 50))}"</div>`}</button>`).join('')}</div>`);
+    }
+    case 'galleryReveal': return card(`<div class="crown">👀</div><h2>Watch the TV</h2>`);
+    case 'final': return card(`<div class="crown">🎂</div><h2>Happy 60th, ${G}.</h2><p>They love you. Even the liars.</p>`);
+  }
+  return '';
+}
+function render(s) {
+  if (dead) return;
+  S = s; ring.set(s.deadline, client.now);
+  document.getElementById('gname').textContent = s.grandmaName;
+  const key = [s.phase, s.voteOpen, s.idx, s.step, s.grandmaAnswer, s.waitingOnGrandma, editing, s.pickOptions.join('|'), s.grandmaPick, s.images.map((i) => i.id + i.status).join(','), s.gallery && s.gallery.batch].join('|');
+  if (key === lastKey) return; lastKey = key;
+  app.className = 'anim'; app.innerHTML = phase(s);
+  const $ = (q) => app.querySelector(q);
+  if ($('#edit')) $('#edit').onclick = () => { editing = true; lastKey = null; render(S); };
+  if ($('#ans')) {
+    const a = $('#ans'), cc = $('#cc'); setTimeout(() => a.focus(), 50);
+    if (cc) a.oninput = () => (cc.textContent = a.value.length);
+    a.addEventListener('keydown', (e) => { if (e.key === 'Enter') $('#submit').click(); });
+    $('#submit').onclick = () => { const v = a.value.trim(); if (!v) return toast('Type something first'); $('#submit').disabled = true; client.send({ t: 'answer', value: v }); };
+  }
+  app.querySelectorAll('.choice[data-v]').forEach((b) => (b.onclick = () => { app.querySelectorAll('button').forEach((x) => (x.disabled = true)); client.send({ t: 'answer', value: b.dataset.v }); }));
+  app.querySelectorAll('.imggrid [data-k]').forEach((b) => (b.onclick = () => { app.querySelectorAll('button').forEach((x) => (x.disabled = true)); client.send({ t: 'answer', value: b.dataset.k }); }));
+}
+const client = GameClient({ role: 'grandma', secret, onState: render, onEvent: (e) => {
+  if (e.t === 'close') document.body.classList.add('offline');
+  if (e.t === 'open') document.body.classList.remove('offline');
+  if (e.t === 'error') { dead = true; app.innerHTML = card(`<div class="crown">🚫</div><h2>This isn't the right link.</h2><p>${esc(e.error)}</p>`); }
+  if (e.t === 'ack') { if (e.ok) editing = false; else { toast(e.error || 'Something went wrong'); lastKey = null; if (S) render(S); } }
+} });
+</script>
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Grandma Show</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/style.css">
+<style>
+#camov{position:fixed;inset:0;background:#000;z-index:20}
+#camov video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+#camov .cring{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);width:min(62vw,62vh);height:min(62vw,62vh);border-radius:50%;box-shadow:0 0 0 9999px rgba(4,3,18,.72);outline:4px dashed var(--cyan);outline-offset:-2px}
+#camov .chint{position:absolute;left:0;right:0;top:8%;text-align:center;font-weight:900;font-size:20px;color:#fff;text-shadow:0 2px 8px #000}
+#camov .cbtns{position:absolute;left:0;right:0;bottom:6%;display:flex;flex-direction:column;gap:10px;padding:0 10vw}
+#camov .snapbtn{background:#fff;color:#000;border-radius:999px;padding:18px;font-weight:900;font-size:22px}
+#camov .cancelbtn{background:#ffffff22;color:#fff;border-radius:999px;padding:12px;font-weight:800}
+.selfie{display:flex;align-items:center;gap:14px;margin:6px 0 4px}
+.selfie .pv{width:84px;height:84px;border-radius:50%;background:var(--card);display:grid;place-items:center;font-size:44px;overflow:hidden;flex:none;outline:3px solid var(--card2)}
+.selfie .pv img{width:100%;height:100%;object-fit:cover}
+.selfie label{flex:1;display:block;background:var(--cyan);color:#052a26;font-weight:900;border-radius:14px;padding:16px;text-align:center;font-size:18px;box-shadow:0 5px 0 #17857a}
+.selfie input{display:none}
+details.faces{margin-top:10px;text-align:left}details.faces summary{color:var(--muted);font-weight:800;font-size:14px;cursor:pointer}
+.choice.picked{background:#1b4d38;outline:3px solid var(--green)}
+.choices.compact .choice{padding:10px 12px;font-size:16px;border-radius:12px;box-shadow:0 3px 0 #14113a}
+.choices.compact .choice .n{width:24px;height:24px;font-size:12px}
+.lbrow .md img{width:30px;height:30px;border-radius:50%;object-fit:cover;vertical-align:middle}
+.lbbtn{background:var(--card2);border-radius:999px;padding:6px 12px;font-weight:900;font-size:14px;white-space:nowrap}
+#lbov{position:fixed;inset:0;background:var(--bg);z-index:5;overflow:auto;padding:14px 14px 40px}
+#lbov .hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}#lbov h2{margin:0;font-size:24px}
+#lbov .close{background:var(--card2);border-radius:999px;padding:8px 14px;font-weight:900}
+.lbrow{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:14px;padding:10px 12px;margin:6px 0;font-weight:800;cursor:pointer}
+.lbrow.me{outline:2px solid var(--cyan)}.lbrow.first{background:#4a3a00;outline:2px solid var(--gold)}
+.lbrow .md{width:34px;font-size:22px;text-align:center}.lbrow .nm{flex:1}.lbrow .sc{font-variant-numeric:tabular-nums}
+.lbrow .sub{display:block;font-size:12px;color:var(--muted);font-weight:700}
+.hist{background:#0d0b22;border-radius:12px;padding:8px 12px;margin:-2px 0 8px;font-size:13px}
+.hist div{display:flex;justify-content:space-between;gap:10px;padding:3px 0;border-bottom:1px solid #ffffff10}.hist span:last-child{color:var(--green);font-weight:900;white-space:nowrap}
+.place{background:var(--card);border-radius:14px;padding:12px;margin-top:10px;font-weight:900;font-size:18px}
+textarea{min-height:120px;resize:none;font-size:19px;line-height:1.3}
+.truthnote{background:#4a3a00;color:var(--gold);border-radius:14px;padding:12px;font-weight:800;margin-bottom:10px;text-align:left}
+.imggrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.imggrid button{position:relative;padding:0;border-radius:14px;overflow:hidden;background:var(--card);aspect-ratio:1;box-shadow:0 4px 0 #14113a}
+.imggrid button img{width:100%;height:100%;object-fit:cover;display:block}
+.imggrid button .n{position:absolute;left:8px;top:8px;background:#000c;color:#fff;font-weight:900;border-radius:999px;width:30px;height:30px;display:grid;place-items:center;font-size:14px}
+.imggrid button.mine{opacity:.4}.imggrid button .yours{position:absolute;bottom:0;left:0;right:0;background:#000c;color:var(--pink);font-size:11px;font-weight:900;padding:4px;text-transform:uppercase;letter-spacing:.08em}
+.imggrid button .fail{position:absolute;inset:0;display:grid;place-items:center;padding:10px;font-size:12px;color:var(--muted);font-weight:700}
+.breakdown{display:flex;gap:8px;justify-content:center;margin-top:8px;font-size:14px;font-weight:800}.breakdown span{background:var(--card);border-radius:999px;padding:6px 12px}
+.trophy{background:linear-gradient(135deg,#ffd23f,#f5a300);color:#2a1d00;border-radius:16px;padding:12px;font-weight:900;font-size:20px;margin-top:10px}
+</style>
+</head>
+<body class="phone">
+<div class="offline-bar">Reconnecting...</div>
+<div class="topbar"><span id="topbar" style="display:contents"><span class="brand">The Grandma Show</span></span><div id="ring" class="ring sm hide"><span class="ring-num"></span></div></div>
+<main id="app"></main>
+<div id="lbov" class="hide"></div>
+<div id="camov" class="hide"><video id="camv" autoplay playsinline muted></video><div class="cring"></div><div class="chint">Put your face in the circle 😄</div><div class="cbtns"><button class="snapbtn" id="snap">📸 SNAP</button><button class="cancelbtn" id="camcancel">Cancel</button></div></div>
+<script src="/common.js"></script>
+<script>
+const app = document.getElementById('app'), topbar = document.getElementById('topbar');
+let S = null, lastKey = null, editing = false, truthNote = null, renaming = false, openHist = null, pendingPhoto = null, photoCleared = false, draftName = '', chosenEmoji = EMOJIS[(Math.random() * EMOJIS.length) | 0];
+const ring = TimerRing(document.getElementById('ring'));
+const card = (inner) => `<div class="card pop">${inner}</div>`;
+
+function joinForm(s) {
+  return card(`<h1>${renaming ? 'Change your name' : esc(s.title)}</h1><p class="muted">${renaming ? 'Same player, same points, new name or face.' : 'Type your name, pick a face, then look at the TV. One player per phone.'}</p>
+    <label>Your name</label><input id="name" maxlength="14" placeholder="e.g. Uncle Dave" autocomplete="off" autocapitalize="words" value="${esc(draftName)}">
+    <label>Your face</label>
+    <div class="selfie"><div class="pv" id="pv">${pendingPhoto ? `<img src="${pendingPhoto}">` : (s.me && s.me.photo && !photoCleared ? `<img src="${esc(s.me.photo)}">` : chosenEmoji)}</div><label id="selfbtn">📸 ${pendingPhoto || (s.me && s.me.photo) ? 'Retake selfie' : 'Take a selfie'}<input id="selfie" type="file" accept="image/*" capture="user"></label></div>
+    <details class="faces"><summary>No camera? Pick a face instead</summary><div class="emojis" id="emojis">${EMOJIS.map((e) => `<button type="button" class="emo ${e === chosenEmoji ? 'sel' : ''}" data-e="${e}">${e}</button>`).join('')}</div></details>
+    <button class="btn" id="join">${renaming ? 'SAVE' : "I'M IN"}</button>
+    ${renaming ? '<button class="btn secondary" id="cancel">Cancel</button>' : '<p class="tiny muted">Little kids: share a phone with a grown-up.</p>'}`);
+}
+function phase(s, me) {
+  const it = s.item, G = esc(s.grandmaName);
+  const qtag = () => `<div class="qtag ${it.double ? 'double' : ''}">${it.double ? 'Final · double points' : it.type === 'image' ? 'Picture round' : 'Question ' + s.qnum}</div>`;
+  const guess = it && it.tone === 'guess';
+  switch (s.phase) {
+    case 'lobby':
+      return card(`<div class="bigem">${me.photo ? `<img src="${esc(me.photo)}" style="width:110px;height:110px;border-radius:50%;object-fit:cover">` : me.emoji}</div><h2>You're in, ${esc(me.name)}.</h2><p>Look at the TV. It starts when the MC says so.</p><p class="muted">${G} types the truth. You type a lie. Two trophies: whoever knows her best, and whoever fakes her best.</p><button class="btn secondary" id="rename">Change my name</button>`);
+    case 'slide':
+      return card(`<div class="bigem">👀</div><h2>Look at the TV</h2>`);
+    case 'read':
+      return card(`${qtag()}${it.type === 'image' && me.group >= 0 ? `<div class="qtag" style="margin-left:6px">Group ${me.group + 1}</div>` : ''}<h2 class="prompt">${it.type === 'image' ? esc(me.groupPrompt || it.prompt) : blank(it.prompt)}</h2><p class="hint">🎙️ Listen to the MC. Your keyboard opens on <b class="cyan">GO</b>.</p><div class="bigem">⏳</div>`);
+    case 'answer': {
+      if (me.answer != null && !editing) {
+        if (s.waitingOnGrandma) return card(`<div class="lock">⏰</div><h2>Time's up.</h2><p class="muted">The vote starts as soon as ${G}'s answer is in.</p>`);
+        return card(`<div class="lock">✅</div><h2>Locked in</h2><div class="mine">${esc(me.answer && typeof me.answer === 'object' ? (me.answer.memory ? me.answer.memory + ' — ' : '') + me.answer.scene : me.answer)}</div><p class="muted">Waiting for everyone else.</p><button class="btn secondary" id="edit">Change it</button>`);
+      }
+      if (me.autoTruth && me.answer == null && !truthNote) truthNote = `🤯 That's EXACTLY what ${G} said. Truth points are yours, PLUS crowd points for everyone who finds her answer. Now write a LIE for double duty.`;
+      const note = truthNote ? `<div class="truthnote">${truthNote}</div>` : '';
+      const prev = editing && me.answer != null ? me.answer : '';
+      if (it.type === 'fibbage') return card(`${qtag()}${note}<h2 class="prompt">${blank(it.prompt)}</h2><p class="hint">${guess ? `Write what you think ${G} said.` : `Write a <b class="pink">LIE</b> that sounds like something ${G} would say.`}</p><input id="ans" maxlength="${s.maxAnswerLength}" placeholder="${guess ? 'your guess...' : 'your lie...'}" autocomplete="off" value="${esc(prev)}"><div class="cc"><span id="cc">${prev.length}</span>/${s.maxAnswerLength}</div><button class="btn" id="submit">${guess ? 'LOCK IT IN' : 'LOCK IN MY LIE'}</button>`);
+      if (it.type === 'number') return card(`${qtag()}<h2 class="prompt">${esc(it.prompt)}</h2><p class="hint">Closest to ${G}'s real number wins.</p><input id="ans" type="number" inputmode="decimal" placeholder="your guess" value="${esc(prev)}"><button class="btn" id="submit">LOCK IT IN</button>`);
+      if (it.type === 'image') {
+        const prevS = prev && typeof prev === 'object' ? prev.scene : prev || '';
+        return card(`${qtag()}${me.group >= 0 ? `<div class="qtag" style="margin-left:6px">Group ${me.group + 1}</div>` : ''}<h2 class="prompt">${esc(me.groupPrompt || it.prompt)}</h2>
+        <p class="hint">Type the prompt that creates the best picture of THIS. Describe it like a movie still. The AI paints it with ${G}'s real face. Artists stay secret until after the vote.</p><textarea id="ans" maxlength="240" placeholder="${G} is...">${esc(prevS)}</textarea><div class="cc"><span id="cc">${esc(prevS).length}</span>/240</div>
+        <button class="btn" id="submit">SEND IT TO THE AI</button>`);
+      }
+      return card(`${qtag()}<h2 class="prompt">${esc(it.prompt)}</h2><p class="hint">What will ${G} say?</p><div class="choices">${s.pickOptions.map((o) => `<button class="choice" data-v="${esc(o)}">${esc(o)}</button>`).join('')}</div>`);
+    }
+    case 'sorting':
+      return card(`<div class="lock">🧹</div><h2>Sorting the answers...</h2><p class="muted">Merging duplicates and typos. One sec.</p>`);
+    case 'vote': {
+      if (me.autoTruth) return card(`<div class="lock">🧠</div><h2>You already nailed the truth.</h2><p>Sit this vote out and watch them squirm.</p>`);
+      const open = s.voteOpen;
+      return card(`<h2 class="prompt small">${blank(it.prompt)}</h2><p class="hint">${open ? (me.vote ? `✅ Vote's in. Tap another one to change it.` : `Which one did <b class="gold">${G}</b> actually say? One tap.`) : `👀 Read them on the TV. Voting opens on <b class="cyan">GO</b>.`}</p><div class="choices ${s.options.length > 8 ? 'compact' : ''}">${s.options.map((o, i) => `<button class="choice ${o.mine ? 'mine' : ''} ${me.vote === o.key ? 'picked' : ''}" data-k="${o.key}" ${o.mine || !open ? 'disabled' : ''}><span class="n">${i + 1}</span><span>${esc(o.text)}</span>${o.mine ? '<span class="yours">yours</span>' : me.vote === o.key ? '<span class="yours" style="color:var(--green)">your vote</span>' : ''}</button>`).join('')}</div>`);
+    }
+    case 'reveal':
+      return card(`<div class="bigem">👀</div><h2>Watch the TV</h2><p class="muted">The reveal is happening up there.</p>`);
+    case 'scores':
+      return card(`<div class="lock">${me.delta > 0 ? '🔥' : '💀'}</div><h2>${me.delta > 0 ? '+' + me.delta.toLocaleString() + ' this round' : 'Zero this round.'}</h2><p>You have <b>${me.score.toLocaleString()}</b> points.<br>Rank <b>#${me.rank}</b> of ${s.players.length}.</p><div class="breakdown"><span>🧠 ${me.truthPts.toLocaleString()}</span><span>🎭 ${me.foolPts.toLocaleString()}</span></div>`);
+    case 'imageQueued': {
+      const mine = s.images.find((i) => i.mine);
+      return card(`<div class="bigem">🎨</div><h2>${mine ? 'The AI is drawing yours.' : 'Pictures are being drawn.'}</h2><p class="muted">${mine ? `"${esc(mine.prompt)}"` : ''}</p><p class="muted">Gallery opens in a couple of questions.</p>`);
+    }
+    case 'galleryWait': case 'galleryShow':
+      return card(`<div class="bigem">🖼️</div><h2>Look at the TV</h2><p class="muted">${s.gallery ? `Group ${s.gallery.group + 1} of ${s.gallery.batches} is on the big screen. Vote coming up.` : 'The gallery is on the big screen.'}</p>`);
+    case 'galleryVote': {
+      if (me.vote) return card(`<div class="lock">🗳️</div><h2>Vote's in.</h2><p class="muted">Now ${G} decides.</p>`);
+      return card(`<div class="qtag">Group ${s.gallery.group + 1} of ${s.gallery.batches}</div><h2>Pick the best picture</h2><p class="hint">Tap your favorite. Not your own.</p><div class="imggrid">${s.images.map((im, i) => `<button class="${im.mine ? 'mine' : ''}" data-k="${im.id}" ${im.mine ? 'disabled' : ''}><span class="n">${i + 1}</span>${im.status === 'done' ? `<img src="${esc(im.url)}" alt="">` : `<div class="fail">🚫 "${esc(im.prompt.slice(0, 50))}"</div>`}${im.mine ? '<span class="yours">yours</span>' : ''}</button>`).join('')}</div>`);
+    }
+    case 'galleryReveal':
+      return card(`<div class="bigem">👀</div><h2>Watch the TV</h2>`);
+    case 'final': {
+      const k = s.awards.knows && s.awards.knows.id === me.id, f = s.awards.fooler && s.awards.fooler.id === me.id;
+      return card(`<div class="bigem">${k || f ? '🏆' : me.rank === 1 ? '🥇' : '🎂'}</div><h2>${me.rank === 1 ? 'Overall champion.' : '#' + me.rank + ' of ' + s.players.length}</h2>${k ? `<div class="trophy">🧠 You know ${G} best</div>` : ''}${f ? `<div class="trophy">🎭 Best ${G} impersonator</div>` : ''}<p>${me.score.toLocaleString()} points. ${k || f || me.rank === 1 ? 'Go collect your prize.' : 'Go eat cake.'}</p>`);
+    }
+  }
+  return '';
+}
+let camStream = null;
+async function openCam() {
+  const ov = document.getElementById('camov'), v = document.getElementById('camv');
+  try {
+    camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 1280 } }, audio: false });
+  } catch (e) { toast('Camera said no, opening the normal one'); const f = document.getElementById('selfie'); if (f) f.click(); return; }
+  v.srcObject = camStream; ov.classList.remove('hide');
+  document.getElementById('camcancel').onclick = closeCam;
+  document.getElementById('snap').onclick = () => {
+    try {
+      const vw = innerWidth, vh = innerHeight, vidW = v.videoWidth, vidH = v.videoHeight;
+      if (!vidW) return toast('One sec, camera is warming up');
+      const scale = Math.max(vw / vidW, vh / vidH);
+      const offX = (vidW * scale - vw) / 2, offY = (vidH * scale - vh) / 2;
+      const d = Math.min(vw, vh) * 0.62 * 1.45; // capture a bit MORE than the circle so heads are never clipped
+      const side = d / scale;
+      const cxV = vidW / 2; // circle is horizontally centered; preview is mirrored so center is center
+      const cyV = (vh * 0.42 + offY) / scale;
+      const c = document.createElement('canvas'); c.width = 160; c.height = 160; const x = c.getContext('2d');
+      x.translate(160, 0); x.scale(-1, 1);
+      x.drawImage(v, cxV - side / 2, Math.max(0, cyV - side / 2), side, side, 0, 0, 160, 160);
+      pendingPhoto = c.toDataURL('image/jpeg', 0.85); photoCleared = false;
+      closeCam();
+      const pv = document.querySelector('#pv'); if (pv) pv.innerHTML = `<img src="${pendingPhoto}">`;
+      if (S && S.me) flushPhoto();
+      lastKey = null; if (S) render(S);
+    } catch (e) { toast('Could not snap, try the normal camera'); closeCam(); const f = document.getElementById('selfie'); if (f) f.click(); }
+  };
+}
+function closeCam() {
+  document.getElementById('camov').classList.add('hide');
+  if (camStream) { camStream.getTracks().forEach((t) => t.stop()); camStream = null; }
+}
+async function flushPhoto() {
+  if (!pendingPhoto || !client.playerId()) return;
+  const data = pendingPhoto; pendingPhoto = null;
+  const r = await client.uploadPhoto(data);
+  if (!r.ok) { toast('Selfie upload failed, using your face pick'); }
+}
+function render(s) {
+  S = s; const me = s.me;
+  if (me && pendingPhoto) flushPhoto();
+  ring.set(s.deadline, client.now);
+  const medal = (r) => ({ 1: '🥇', 2: '🥈', 3: '🥉' }[r] || '');
+  topbar.innerHTML = me ? `<span class="avatar">${avatarInner(me)}${esc(me.name)}</span><span class="tscore">${me.score.toLocaleString()} pts · ${medal(me.rank)}${me.rank ? '#' + me.rank : ''}</span><button class="lbbtn" id="lbbtn">🏆</button>` : `<span class="brand">${esc(s.title)}</span>`;
+  const lbb = document.getElementById('lbbtn'); if (lbb) lbb.onclick = () => showLb(true);
+  if (!document.getElementById('lbov').classList.contains('hide')) renderLb(s);
+  if (s.phase !== 'answer') truthNote = null;
+  const key = [renaming, s.voteOpen, s.phase, s.idx, s.step, me ? me.id : '-', me && me.answer != null, me && me.vote, me && me.autoTruth, s.waitingOnGrandma, s.options.map((o) => o.key).join(','), editing, s.pickOptions.join('|'), me && me.score, s.images.map((i) => i.id + i.status).join(','), truthNote, s.gallery && s.gallery.batch, me && me.group].join('|');
+  if (key === lastKey) return;
+  lastKey = key;
+  app.className = 'anim';
+  app.innerHTML = me && !renaming ? phase(s, me) : joinForm(s);
+  wire(s, me);
+}
+function showLb(on) { const ov = document.getElementById('lbov'); ov.classList.toggle('hide', !on); if (on && S) renderLb(S); }
+function renderLb(s) {
+  const me = s.me, ov = document.getElementById('lbov'); if (!me) return;
+  const medal = (r) => ({ 1: '🥇', 2: '🥈', 3: '🥉' }[r] || r);
+  const rows = s.leaderboard.map((p) => {
+    const h = (s.histories && s.histories[p.id]) || [];
+    const open = openHist === p.id;
+    return `<div class="lbrow ${p.id === me.id ? 'me' : ''} ${p.rank === 1 ? 'first' : ''}" data-id="${p.id}"><span class="md">${medal(p.rank)}</span><span class="nm">${p.photo ? `<img src="${esc(p.photo)}" style="width:26px;height:26px;border-radius:50%;object-fit:cover;vertical-align:middle">` : p.emoji} ${esc(p.name)}${p.id === me.id ? ' (you)' : ''}<span class="sub">🧠 ${p.truthPts.toLocaleString()} · 🎭 ${p.foolPts.toLocaleString()}${p.bonusPts ? ' · 🎨 ' + p.bonusPts.toLocaleString() : ''}</span></span><span class="sc">${p.score.toLocaleString()}</span></div>${open ? `<div class="hist">${h.length ? h.map((x) => `<div><span>${x.kind === 'gallery' ? '🎨 Gallery' : 'Q' + x.q} · ${esc(x.label)}</span><span>+${x.pts.toLocaleString()}</span></div>`).join('') : '<div><span>No points yet.</span><span></span></div>'}</div>` : ''}`;
+  }).join('');
+  ov.innerHTML = `<div class="hd"><h2>🏆 Leaderboard</h2><button class="close" id="lbclose">Close</button></div><div class="place">You are ${({ 1: '🥇 ', 2: '🥈 ', 3: '🥉 ' }[me.rank] || '')}#${me.rank} of ${s.players.length} with ${me.score.toLocaleString()} points</div><p class="tiny muted">Tap a name to see where their points came from.</p>${rows}<button class="btn secondary" id="lbrename">✏️ Change my name or face</button>`;
+  document.getElementById('lbclose').onclick = () => showLb(false);
+  document.getElementById('lbrename').onclick = () => { showLb(false); renaming = true; lastKey = null; render(S); };
+  ov.querySelectorAll('.lbrow').forEach((r) => (r.onclick = () => { openHist = openHist === r.dataset.id ? null : r.dataset.id; renderLb(s); }));
+}
+function disableAll() { app.querySelectorAll('button').forEach((b) => (b.disabled = true)); }
+function wire(s, me) {
+  const $ = (q) => app.querySelector(q);
+  if (!me || renaming) {
+    const st = client.stored(); const pre = draftName || (me ? me.name : st.name); if (pre) $('#name').value = pre;
+    $('#name').addEventListener('input', () => { draftName = $('#name').value; });
+    const preE = me ? me.emoji : st.emoji; if (preE && EMOJIS.includes(preE)) { chosenEmoji = preE; app.querySelectorAll('.emo').forEach((x) => x.classList.toggle('sel', x.dataset.e === chosenEmoji)); }
+    app.querySelectorAll('.emo').forEach((b) => (b.onclick = () => { chosenEmoji = b.dataset.e; pendingPhoto = null; photoCleared = true; app.querySelectorAll('.emo').forEach((x) => x.classList.toggle('sel', x === b)); $('#pv').innerHTML = chosenEmoji; }));
+    const selfLabel = $('#selfbtn');
+    if (selfLabel) selfLabel.onclick = (ev) => {
+      const nm = $('#name'); if (nm) draftName = nm.value;
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.isSecureContext) { ev.preventDefault(); openCam(); }
+      // otherwise the label falls through to the native camera input
+    };
+    $('#selfie').onchange = async (ev) => {
+      const f = ev.target.files && ev.target.files[0]; if (!f) return;
+      try { pendingPhoto = await shrinkPhoto(f); photoCleared = false; $('#pv').innerHTML = `<img src="${pendingPhoto}">`; $('#selfie').parentElement.firstChild.textContent = '📸 Retake selfie'; } catch { toast('Could not read that photo, pick a face instead'); }
+    };
+    $('#join').onclick = () => {
+      const n = $('#name').value.trim(); if (!n) return toast('Type your name first');
+      if (renaming) { client.rename(n, chosenEmoji); if (photoCleared && !pendingPhoto) client.uploadPhoto(''); renaming = false; lastKey = null; } else client.join(n, chosenEmoji);
+    };
+    if ($('#cancel')) $('#cancel').onclick = () => { renaming = false; lastKey = null; render(S); };
+    $('#name').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('#join').click(); });
+    return;
+  }
+  if ($('#rename')) $('#rename').onclick = () => { renaming = true; lastKey = null; render(S); };
+  if ($('#edit')) $('#edit').onclick = () => { editing = true; lastKey = null; render(S); };
+  if ($('#ans')) {
+    const a = $('#ans'), cc = $('#cc');
+    setTimeout(() => a.focus(), 50);
+    if (cc) a.oninput = () => (cc.textContent = a.value.length);
+    if (a.tagName !== 'TEXTAREA') a.addEventListener('keydown', (e) => { if (e.key === 'Enter') $('#submit').click(); });
+    $('#submit').onclick = () => {
+      const v = a.value.trim(); if (!v) return toast('Type something first');
+      $('#submit').disabled = true;
+      const mem = $('#mem');
+      client.send({ t: 'answer', value: mem ? { memory: mem.value.trim(), scene: v } : v });
+    };
+  }
+  app.querySelectorAll('.choice[data-v]').forEach((b) => (b.onclick = () => { disableAll(); client.send({ t: 'answer', value: b.dataset.v }); }));
+  app.querySelectorAll('[data-k]').forEach((b) => (b.onclick = () => { if (s.phase === 'galleryVote') disableAll(); client.send({ t: 'vote', key: b.dataset.k }); }));
+}
+const client = GameClient({ role: 'player', onState: render, onEvent: (e) => {
+  if (e.t === 'close') document.body.classList.add('offline');
+  if (e.t === 'open') document.body.classList.remove('offline');
+  if (e.t === 'ack') {
+    if (e.ok) { editing = false; if (e.kind === 'rename') toast('Name updated'); if (e.matchedTruth) { truthNote = null; lastKey = null; if (S) render(S); } }
+    else { toast(e.error || 'Something went wrong'); lastKey = null; if (S) render(S); }
+  }
+} });
+</script>
+</body>
+</html>

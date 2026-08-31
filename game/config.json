@@ -1,0 +1,69 @@
+{
+  "port": 4060,
+  "secret": "party60",
+  "title": "The Grandma Show",
+  "subtitle": "Birthday Edition",
+  "grandmaName": "Grandma",
+  "manualStart": true,
+  "timers": {
+    "fibbage": 60,
+    "number": 30,
+    "pick": 30,
+    "image": 120,
+    "vote": 30,
+    "galleryVote": 45
+  },
+  "points": {
+    "truth": 1000,
+    "fool": 500,
+    "numberClosest": 1000,
+    "numberSecond": 500,
+    "numberExact": 500,
+    "pick": 1000,
+    "galleryVote": 500,
+    "galleryGrandma": 1500
+  },
+  "pickOptions": [],
+  "maxAnswerLength": 80,
+  "maxPromptLength": 240,
+  "dedupeTimeoutMs": 9000,
+  "imageConcurrency": 2,
+  "openai": {
+    "keyFile": ".openai-key",
+    "dedupe": true,
+    "dedupeModel": "gpt-4.1-mini",
+    "images": true,
+    "imageModel": "gpt-image-1.5",
+    "imageQuality": "medium",
+    "imageSize": "1024x1024",
+    "imagePromptPrefix": "Photorealistic, like a real photo taken on a phone. ",
+    "referencePhotos": [
+      "game/reference/1.jpg",
+      "game/reference/2.jpg",
+      "game/reference/3.jpg"
+    ],
+    "inputFidelity": "low"
+  },
+  "groupSize": 4,
+  "music": {
+    "lobby": "lobby",
+    "read": "question",
+    "answer": "answer",
+    "vote": "vote",
+    "sorting": "none",
+    "reveal": "none",
+    "scores": "none",
+    "imageQueued": "lobby",
+    "galleryWait": "lobby",
+    "galleryShow": "question",
+    "galleryVote": "vote",
+    "galleryReveal": "none",
+    "final": "none"
+  },
+  "manualVoteStart": true,
+  "maxPlayers": 16,
+  "grandmaPhoto": null,
+  "maxMemoryLength": 100,
+  "groupMin": 3,
+  "groupMax": 4
+}

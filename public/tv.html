@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Grandma Show · TV</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/style.css">
+<style>
+body.tv{height:100vh;overflow:hidden;display:flex;flex-direction:column;background:radial-gradient(1200px 700px at 50% -10%,#2a2466 0%,var(--bg) 60%)}
+.tvhdr{display:flex;align-items:center;justify-content:space-between;padding:16px 36px;font-weight:900}
+.brand-t{font-size:26px;margin-right:12px}.brand-s{color:var(--muted);font-size:16px;font-weight:700}
+.hdr-right{display:flex;align-items:center;gap:22px;font-size:18px}
+.qcount{color:var(--muted)}.gon{color:var(--gold)}.goff{color:var(--muted);animation:blink 1.4s infinite}
+.stage{flex:1;padding:10px 60px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:0;position:relative}
+.strip{display:flex;gap:24px;padding:8px 30px 16px;max-height:24vh;overflow:hidden}
+.strip .zone{flex:1;background:#ffffff08;border-radius:16px;padding:8px 12px;min-height:60px}
+.strip .zone.in{outline:2px solid #1b4d38}.strip .zone.wait{outline:2px solid #4a2a2a}
+.strip .zl{font-size:14px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.strip .zone.in .zl{color:var(--green)}.strip .zone.wait .zl{color:#ff8a8a}
+.strip .avatar{font-size:15px}.strip .avatar.g{background:#4a3a00;outline:2px solid var(--gold);color:var(--gold)}
+.strip .empty{color:var(--muted);font-size:14px;font-style:italic;padding:6px}
+.gpop{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%) scale(.6);background:linear-gradient(135deg,#ffd23f,#f5a300);color:#2a1d00;font-size:clamp(36px,4.5vw,64px);font-weight:900;padding:26px 50px;border-radius:30px;box-shadow:0 30px 100px #000a,0 0 120px #f5b70066;z-index:7;opacity:0;pointer-events:none;transition:.35s cubic-bezier(.2,1.4,.4,1)}
+.gpop.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.lrow .medal{width:52px;font-size:36px;text-align:center;line-height:1}
+.lrow.first{background:linear-gradient(90deg,#5a4600,#3d2f00);outline:2px solid var(--gold)}.lrow.second{outline:2px solid #c0c0c0}.lrow.third{outline:2px solid #cd7f32}
+.tvring{position:fixed;right:40px;top:78px;--size:120px;z-index:3}
+h1{font-size:clamp(40px,6vw,86px);margin:0;line-height:1.05;font-weight:900;letter-spacing:-.02em}
+.sub{font-size:clamp(20px,2.4vw,34px);color:var(--yellow);font-weight:800;margin-top:8px}
+.prompt{font-size:clamp(34px,4.6vw,66px);line-height:1.15;margin:16px 0;font-weight:900;max-width:1500px}
+.prompt.small{font-size:clamp(26px,3vw,42px);margin:6px 0}.prompt.tiny{font-size:clamp(18px,1.8vw,26px);color:var(--muted);margin:4px 0 8px;font-weight:700}
+.instr{font-size:clamp(18px,2vw,28px);color:var(--muted);margin-top:8px}
+.qimg{max-height:38vh;border-radius:18px;margin:12px 0;box-shadow:0 20px 60px #0008}
+.status{display:flex;align-items:center;gap:40px;margin-top:36px;font-size:clamp(20px,2.2vw,32px);font-weight:800}
+.gwait{background:var(--card);border-radius:999px;padding:10px 24px;animation:blink 1.6s infinite}.gwait.ok{background:#4a3a00;color:var(--gold);animation:none}
+.cnt b{font-size:1.4em;color:var(--cyan)}
+.waitbanner{margin-top:24px;font-size:clamp(20px,2vw,30px)}
+.readtag{margin-top:40px;font-size:clamp(22px,2.4vw,34px);font-weight:900;color:var(--cyan);animation:blink 1.6s infinite}
+.lobby{display:flex;align-items:flex-start;gap:60px;width:100%;max-width:1700px;text-align:left;justify-content:center}
+.lobby-l{flex:none;display:flex;flex-direction:column;align-items:center;background:#fff;color:#000;border-radius:28px;padding:22px;box-shadow:0 30px 80px #0009}
+.qr{width:min(46vh,460px);height:auto;display:block;image-rendering:pixelated}
+.joinurl{font-weight:900;font-size:22px;margin-top:10px;font-family:ui-monospace,Menlo,monospace;letter-spacing:.02em}
+.lobby-r{flex:1;min-width:0}
+.lobbyhead{font-size:clamp(26px,2.6vw,40px);font-weight:900;margin:4px 0 2px}.lobbyhead .n{color:var(--cyan)}
+.lobbysub{color:var(--muted);font-weight:700;font-size:clamp(15px,1.4vw,20px);margin-bottom:16px}
+.joingrid{display:flex;flex-wrap:wrap;gap:16px 10px;align-content:flex-start;max-height:62vh;overflow:hidden}
+.joiner{width:118px;text-align:center}
+.joiner.new{animation:pop .6s cubic-bezier(.2,1.4,.4,1) both}
+.joiner .jav{width:88px;height:88px;border-radius:50%;margin:0 auto;background:var(--card);display:grid;place-items:center;font-size:52px;outline:4px solid var(--card2);overflow:hidden}
+.joiner .jav img{width:100%;height:100%;object-fit:cover;display:block}
+.joiner.dim{opacity:.35;filter:grayscale(1)}
+.joiner .jn{font-weight:800;font-size:15px;margin-top:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.joiner.g .jav{outline-color:var(--gold)}.joiner.g .jn{color:var(--gold)}
+.opts{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;width:100%;max-width:1500px;margin-top:18px}
+.opts.many{grid-template-columns:repeat(3,1fr)}.opts.lots{grid-template-columns:repeat(4,1fr)}
+.opt{background:var(--card);border-radius:18px;padding:16px 20px;font-size:clamp(18px,2vw,30px);font-weight:800;text-align:left;display:flex;align-items:center;gap:14px}
+.opts.many .opt{font-size:clamp(16px,1.6vw,24px);padding:12px 16px}.opts.lots .opt{font-size:clamp(14px,1.3vw,20px);padding:10px 14px}
+.opt .n{flex:none;width:40px;height:40px;border-radius:50%;background:var(--card2);display:grid;place-items:center;font-size:18px;color:var(--muted)}
+.pickgrid{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;max-width:1300px;margin:10px 0}
+.pickopt{background:var(--card);border-radius:14px;padding:10px 22px;font-size:clamp(18px,2vw,28px);font-weight:800}
+.reveal{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;width:100%;max-width:1500px}
+.rtitle{font-size:clamp(24px,2.8vw,40px);font-weight:900;color:var(--muted);margin-bottom:14px}
+.big{font-size:clamp(40px,5.2vw,80px);font-weight:900;line-height:1.1;background:var(--card);border-radius:28px;padding:30px 50px;max-width:1400px}
+.big.gold{background:linear-gradient(135deg,#ffd23f,#f5a300);color:#2a1d00;box-shadow:0 0 120px #f5b70055}
+.truthtag{font-size:clamp(22px,2.4vw,34px);font-weight:900;color:var(--gold);letter-spacing:.2em;margin-bottom:16px}
+.voters{margin-top:26px;font-size:22px}.voters .lbl{color:var(--muted);font-weight:800;margin-bottom:8px}.voters .avatar{font-size:20px}
+.author{margin-top:22px;font-size:clamp(22px,2.6vw,36px);font-weight:800}
+.lietag{background:var(--pink);color:#fff;padding:4px 14px;border-radius:10px;letter-spacing:.15em;font-size:.8em}
+.bignum{font-size:clamp(90px,14vw,220px);font-weight:900;line-height:1;color:var(--gold);text-shadow:0 0 80px #f5b70066}
+.dudgrid{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;max-width:1500px}
+.dud{background:var(--card);border-radius:14px;padding:10px 16px;text-align:left;opacity:.85}.dud .t{font-weight:800;font-size:clamp(16px,1.5vw,22px)}.dud .by{color:var(--muted);font-size:14px}
+.singles{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:10px;width:100%;max-width:1500px}
+.single{background:var(--card);border-radius:14px;padding:12px 16px;text-align:left}.single .t{font-weight:900;font-size:clamp(16px,1.6vw,24px)}.single .who{color:var(--muted);font-size:16px;margin-top:4px;display:flex;align-items:center;flex-wrap:wrap;gap:4px}.single .arr{margin:0 4px}
+.rank,.lb{width:100%;max-width:1000px}
+.rrow,.lrow{display:flex;align-items:center;gap:16px;background:var(--card);border-radius:14px;padding:8px 18px;margin:6px 0;font-size:clamp(18px,1.8vw,26px);font-weight:800}
+.rrow.win,.lrow.first{background:#4a3a00;outline:2px solid var(--gold)}
+.pos{width:40px;color:var(--muted);text-align:right}.guess,.score{margin-left:auto;font-variant-numeric:tabular-nums}.rrow .pts{margin-left:16px;min-width:90px;text-align:right}
+.lrow .delta{margin-left:auto;color:var(--green);font-size:.85em}.lrow .delta.zero{opacity:0}.lrow .score{margin-left:16px;min-width:110px;text-align:right}
+.lrow .avatar,.rrow .avatar{font-size:.9em}
+.lrow .mini{font-size:.6em;color:var(--muted);margin-left:8px;font-weight:700}
+.more{color:var(--muted);margin-top:8px;font-weight:700}
+.bars{width:100%;max-width:1000px}.bar{display:grid;grid-template-columns:260px 1fr 60px;align-items:center;gap:14px;margin:8px 0;font-size:clamp(18px,1.8vw,26px);font-weight:800}
+.bar .bl{text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bf{height:34px;background:var(--card);border-radius:10px;overflow:hidden}.bf span{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--pink));transition:width .8s ease-out}.bc{color:var(--muted)}
+.stepdots{margin-top:16px}.stepdots i{display:inline-block;width:10px;height:10px;border-radius:50%;background:#3a3570;margin:0 4px}.stepdots i.on{background:var(--cyan)}
+.awards{display:flex;gap:30px;margin:10px 0 24px}
+.award{background:var(--card);border-radius:24px;padding:22px 34px;min-width:380px;text-align:center}
+.award.knows{background:linear-gradient(135deg,#1f6b5a,#0f3d33);outline:3px solid var(--cyan)}.award.fooler{background:linear-gradient(135deg,#7a1d4a,#3d0f27);outline:3px solid var(--pink)}
+.award .at{font-size:16px;letter-spacing:.15em;text-transform:uppercase;color:#fffc;font-weight:900}.award .an{font-size:clamp(30px,3.4vw,50px);font-weight:900;margin:6px 0}.award .av{font-size:20px;color:#fffb;font-weight:800}.award .aem{font-size:64px;line-height:1.1}
+.awardsmall{display:flex;gap:16px;margin-top:14px;font-size:18px;font-weight:800}.awardsmall span{background:var(--card);border-radius:999px;padding:8px 18px}
+.scorewrap{display:flex;gap:40px;width:100%;max-width:1700px;align-items:flex-start;justify-content:center}
+.lbcol{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center}
+.races{flex:none;width:420px;display:flex;flex-direction:column;gap:18px;margin-top:60px}
+.race{border-radius:22px;padding:18px 20px}
+.race.knows{background:linear-gradient(135deg,#1f6b5a,#0f3d33);outline:3px solid var(--cyan)}
+.race.fooler{background:linear-gradient(135deg,#7a1d4a,#3d0f27);outline:3px solid var(--pink)}
+.racet{font-size:19px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#fffd;margin-bottom:10px}
+.racerow{display:grid;grid-template-columns:56px 1fr auto;align-items:center;gap:12px;padding:7px 0;font-weight:800;border-bottom:1px solid #ffffff14}
+.racerow:last-child{border-bottom:0}
+.racerow .rimg{width:52px;height:52px;border-radius:50%;overflow:hidden;background:var(--card2);display:grid;place-items:center;font-size:30px}
+.racerow .rimg img{width:100%;height:100%;object-fit:cover;display:block}
+.racerow.lead .rimg{outline:3px solid #fff}
+.racerow .rname{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:20px}
+.racerow.lead .rname{font-size:23px}
+.racerow .rpts{font-variant-numeric:tabular-nums;font-size:22px;font-weight:900}
+.racerow.none{color:#fff9;font-style:italic;grid-template-columns:1fr}
+.podium{display:flex;align-items:flex-end;gap:22px;margin-top:20px}
+.pod{background:var(--card);border-radius:22px;padding:24px 34px;min-width:260px}
+.pod.first{background:linear-gradient(135deg,#ffd23f,#f5a300);color:#2a1d00;transform:scale(1.15);margin:0 10px 20px}
+.pod .medal{font-size:54px}.pod .pem{font-size:70px;line-height:1.1}.pod .pname{font-size:30px;font-weight:900}.pod .pscore{font-size:22px;font-weight:800;opacity:.8}
+.finalsub{font-size:28px;color:var(--muted);margin-top:34px;font-weight:800}
+.finalwrap{display:flex;gap:50px;width:100%;max-width:1750px;align-items:flex-start;justify-content:center}
+.finalleft{flex:1;display:flex;flex-direction:column;align-items:center}
+.finalleft .awards{transform:scale(.82);transform-origin:top center}
+.finalright{flex:none;width:430px;background:#ffffff0a;border-radius:22px;padding:16px 20px;max-height:82vh;overflow:hidden}
+.fhead{font-size:20px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.frow{display:grid;grid-template-columns:44px 44px 1fr auto;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #ffffff12;font-weight:800;font-size:19px}
+.frow:last-child{border-bottom:0}
+.frow.first{color:var(--gold)}
+.fpos{text-align:center;font-size:22px}
+.fimg{width:40px;height:40px;border-radius:50%;overflow:hidden;background:var(--card2);display:grid;place-items:center;font-size:24px}
+.fimg img{width:100%;height:100%;object-fit:cover;display:block}
+.fname{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fpts{font-variant-numeric:tabular-nums}
+.photo img{max-height:70vh;max-width:90vw;border-radius:20px;box-shadow:0 30px 80px #000a}.photo .cap{font-size:32px;font-weight:800;margin-top:18px}
+.sorting{font-size:clamp(30px,3.6vw,54px);font-weight:900;animation:blink 1.2s infinite}
+.gimg{max-height:62vh;max-width:70vw;border-radius:22px;box-shadow:0 30px 80px #000a;background:#000}
+.gprompt{font-size:clamp(16px,1.6vw,24px);font-weight:700;margin-top:14px;max-width:1300px;color:var(--muted)}
+.gmemory{font-size:clamp(24px,2.6vw,40px);font-weight:900;margin-bottom:14px;max-width:1400px;color:var(--yellow)}
+.gby{font-size:22px;color:var(--gold);font-weight:900;margin-top:8px}
+.gfail{width:min(60vh,600px);aspect-ratio:1;border-radius:22px;background:var(--card);display:grid;place-items:center;font-size:24px;padding:40px;color:var(--muted);font-weight:800}
+.ggrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;width:100%;max-width:1600px;margin-top:14px}
+.ggrid .gc{position:relative;background:var(--card);border-radius:16px;overflow:hidden;aspect-ratio:1}
+.ggrid .gc img{width:100%;height:100%;object-fit:cover;display:block}
+.ggrid .gc .n{position:absolute;left:10px;top:10px;background:#000c;color:#fff;font-weight:900;border-radius:999px;width:40px;height:40px;display:grid;place-items:center;font-size:20px}
+.ggrid .gc .fail{position:absolute;inset:0;display:grid;place-items:center;padding:14px;font-size:14px;color:var(--muted);text-align:center;font-weight:700}
+.ggrid.small{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+.gpod{display:flex;align-items:flex-end;gap:26px;margin-top:10px}
+.gpod .gp{text-align:center;background:var(--card);border-radius:20px;padding:16px}
+.gpod .gp img{width:min(30vh,320px);height:min(30vh,320px);object-fit:cover;border-radius:14px;display:block}
+.gpod .gp.first img{width:min(42vh,440px);height:min(42vh,440px)}.gpod .gp.first{background:linear-gradient(135deg,#ffd23f,#f5a300);color:#2a1d00}
+.gpod .gp .gv{font-weight:900;font-size:22px;margin-top:8px}.gpod .gp .ga{font-weight:800;font-size:18px;opacity:.85}
+.artgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px;width:100%;max-width:1600px}
+.artcard{position:relative;background:var(--card);border-radius:20px;padding:14px;text-align:left}
+.artcard.gold{background:linear-gradient(135deg,#4a3a00,#2a2000);outline:3px solid var(--gold)}
+.artcrown{position:absolute;top:-22px;right:14px;font-size:40px}
+.artcard .arti{width:100%;aspect-ratio:1;object-fit:cover;border-radius:14px;display:block}
+.artcard .artfail{width:100%;aspect-ratio:1;border-radius:14px;background:var(--card2);display:grid;place-items:center;font-size:50px}
+.artcard .artby{display:flex;align-items:center;gap:10px;font-weight:900;font-size:20px;margin:10px 0 6px}
+.artcard .artby .rimg{width:44px;height:44px;border-radius:50%;overflow:hidden;background:var(--card2);display:grid;place-items:center;font-size:26px;flex:none}
+.artcard .artby .rimg img{width:100%;height:100%;object-fit:cover}
+.artcard .artby .pts{margin-left:auto}
+.artcard .artprompt{color:var(--muted);font-weight:700;font-size:15px;line-height:1.35}
+.progress{font-size:clamp(24px,2.6vw,38px);font-weight:900;margin-top:18px}
+.progress b{color:var(--cyan)}
+#sndhint{position:fixed;right:36px;bottom:16px;color:var(--yellow);font-weight:800;font-size:15px;animation:blink 1.6s infinite;z-index:4}
+.mutebadge{position:fixed;left:24px;bottom:16px;color:var(--muted);font-weight:800;font-size:14px;opacity:.7}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:5}
+.rcard{position:relative;display:inline-block;font-size:clamp(40px,5.2vw,80px);font-weight:900;line-height:1.15;background:var(--card);border-radius:28px;padding:34px 70px;max-width:1500px;overflow:hidden}
+.rcard.long{font-size:clamp(28px,3.4vw,52px);padding:30px 70px}
+.singlegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(430px,1fr));gap:14px;width:100%;max-width:1600px}
+.scard2{position:relative;background:var(--card);border-radius:22px;padding:22px 22px 16px;text-align:center;overflow:visible;box-shadow:0 10px 30px #0006}
+.scard2 .mini-ribbon{border-radius:22px 0 0 0}
+.scard2 .s2text{font-weight:900;font-size:clamp(20px,2vw,32px);line-height:1.2;margin:8px 0 14px}
+.scard2 .s2row{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap}
+.scard2 .s2who{display:inline-flex;flex-direction:column;align-items:center;position:relative;width:96px}
+.scard2 .s2img{width:64px;height:64px;border-radius:50%;overflow:hidden;background:var(--card2);display:grid;place-items:center;font-size:38px;outline:3px solid #3a3570}
+.scard2 .s2who.author .s2img{outline-color:var(--pink)}
+.scard2 .s2img img{width:100%;height:100%;object-fit:cover;display:block}
+.scard2 .s2n{font-weight:800;font-size:14px;margin-top:4px;max-width:96px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.scard2 .s2arr{color:var(--muted);font-weight:800;font-size:15px}
+.scard2 .gain{right:6px;top:-8px}
+.mini-ribbon{position:absolute;top:10px;left:-30px;transform:rotate(-35deg);background:var(--pink);color:#fff;font-size:11px;letter-spacing:.2em;font-weight:900;padding:2px 34px}
+.bigav{display:inline-flex;flex-direction:column;align-items:center;width:170px;position:relative}
+.bigav .bimg{width:150px;height:150px;border-radius:50%;background:var(--card2);display:grid;place-items:center;font-size:84px;overflow:hidden;outline:5px solid var(--pink);box-shadow:0 14px 40px #000a}
+.bigav.gold .bimg{outline-color:var(--gold);box-shadow:0 0 80px #f5b70055}
+.bigav .bimg img{width:100%;height:100%;object-fit:cover;display:block}
+.bigav .bn{font-weight:900;font-size:24px;margin-top:8px;max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bigav .gain{right:2px;top:-4px;font-size:20px;padding:5px 13px}
+.medav{display:inline-flex;flex-direction:column;align-items:center;width:112px;position:relative}
+.medav .bimg{width:92px;height:92px;border-radius:50%;background:var(--card2);display:grid;place-items:center;font-size:52px;overflow:hidden;outline:3px solid #3a3570}
+.medav.win .bimg{outline-color:var(--gold)}
+.medav .bimg img{width:100%;height:100%;object-fit:cover;display:block}
+.medav .bn{font-weight:800;font-size:16px;margin-top:5px;max-width:112px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#e8e6ff}
+.medav .gain{right:-2px;top:-8px}
+.grandmaface{width:190px;height:190px;border-radius:50%;object-fit:cover;outline:6px solid var(--gold);box-shadow:0 0 100px #f5b70066;margin-bottom:14px}
+.rcard.truth{background:linear-gradient(135deg,#ffd23f,#f5a300);color:#2a1d00;box-shadow:0 0 120px #f5b70055}
+.ribbon{position:absolute;top:22px;left:-52px;transform:rotate(-35deg);background:var(--pink);color:#fff;font-size:18px;letter-spacing:.3em;font-weight:900;padding:6px 60px;box-shadow:0 4px 12px #0006}
+.rcard.truth .ribbon{background:#2a1d00;color:var(--gold)}
+.vrow{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:22px;max-width:1500px}
+.vrow .avatar{font-size:22px;position:relative}
+.vlbl{font-size:clamp(18px,2vw,28px);color:var(--muted);font-weight:800;margin-top:24px}
+.authorline{margin-top:26px;font-size:clamp(24px,2.8vw,40px);font-weight:900;display:flex;align-items:center;gap:14px;justify-content:center}
+.authorline .avatar{font-size:.8em;position:relative}
+.gain{position:absolute;right:-10px;top:-16px;background:#0f3d2a;color:#8dffb8;font-size:15px;font-weight:900;padding:3px 9px;border-radius:999px;box-shadow:0 0 0 2px #0a2a1d;opacity:0;transform:scale(.4)}
+.gain.on{animation:gainpop .5s cubic-bezier(.2,1.4,.4,1) forwards}
+@keyframes gainpop{to{opacity:1;transform:scale(1)}}
+.flychip{position:fixed;z-index:6;background:#0f3d2a;color:#8dffb8;font-weight:900;font-size:26px;padding:6px 18px;border-radius:999px;box-shadow:0 0 0 3px #0a2a1d,0 10px 30px #000a;pointer-events:none;opacity:0}
+.drumroll{font-size:clamp(60px,9vw,140px);animation:pulse .25s infinite}
+.dudline{font-size:clamp(20px,2.2vw,32px);color:var(--muted);font-weight:800;margin-bottom:10px}
+.pod .pem img,.award .aem img{width:1em;height:1em;border-radius:50%;object-fit:cover;vertical-align:middle}
+.readyline{margin-top:26px;font-size:clamp(22px,2.4vw,34px);font-weight:900;color:var(--cyan);animation:blink 1.6s infinite}
+#pausedov{position:fixed;inset:0;background:#0d0b22ee;z-index:8;display:grid;place-items:center;text-align:center}
+#setupov{position:fixed;inset:0;background:#0d0b22f2;z-index:9;display:flex;align-items:center;justify-content:center;gap:60px;text-align:center}
+#setupov .sq{background:#fff;color:#000;border-radius:24px;padding:20px}#setupov .sq img{width:min(38vh,380px);display:block}#setupov .sq div{font-weight:900;font-size:22px;margin-top:8px}
+#setupov .note{position:absolute;bottom:40px;left:0;right:0;color:var(--muted);font-weight:800;font-size:20px}
+.hintkey{position:fixed;left:36px;top:56px;color:var(--muted);font-weight:700;font-size:13px;opacity:.55}
+.groupgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:14px;width:100%;max-width:1500px;margin-top:14px}
+.groupcard{background:var(--card);border-radius:18px;padding:14px 18px;text-align:left}.groupcard .gh{color:var(--cyan);font-weight:900;font-size:16px;letter-spacing:.1em;text-transform:uppercase}.groupcard .gp{font-weight:800;font-size:clamp(16px,1.5vw,22px);margin:4px 0}.groupcard .gm{color:var(--muted);font-size:14px}
+.batchtag{font-size:clamp(18px,1.8vw,26px);font-weight:900;color:var(--cyan);margin-bottom:6px}
+#pausedov h1{font-size:90px}#pausedov p{color:var(--muted);font-size:26px;font-weight:800}
+</style>
+</head>
+<body class="tv">
+<div class="offline-bar">Lost connection to the game server. Reconnecting...</div>
+<header class="tvhdr">
+  <div class="brand"><span class="brand-t" id="title">The Grandma Show</span><span class="brand-s" id="subtitle"></span></div>
+  <div class="hdr-right"><span id="qcount" class="qcount"></span><span id="gstate"></span></div>
+</header>
+<main id="stage" class="stage"></main>
+<footer id="strip" class="strip hide"><div class="zone in"><div class="zl">✅ Locked in</div><div id="zin"></div></div><div class="zone wait"><div class="zl">⏳ Waiting on</div><div id="zwait"></div></div></footer>
+<div id="gpop" class="gpop">👑 Grandma locked in her answer!</div>
+<div id="ring" class="ring tvring hide"><span class="ring-num"></span></div>
+<div id="mutebadge" class="mutebadge hide">🔇 muted</div>
+<div id="sndhint">🔊 click once anywhere for sound · F = full screen</div>
+<div id="picsready" class="hide" style="position:fixed;top:64px;left:50%;transform:translateX(-50%);background:#0f3d2a;color:#8dffb8;font-weight:900;padding:8px 20px;border-radius:999px;z-index:4;box-shadow:0 0 0 2px #0a2a1d">🎨 All pictures are ready! The Gallery can start anytime.</div>
+<div id="setupov" class="hide"><div class="sq"><img id="mcqr" alt=""><div>📱 MC (your phone)</div></div><div class="sq"><img id="gqr" alt=""><div>👑 Grandma's phone</div></div><div class="note">Private codes. Press S again to hide before the crowd looks.</div></div>
+<div id="hintkey" class="hintkey hide">S = setup codes · Space = GO / next · M = mute</div>
+<div id="pausedov" class="hide"><div><h1>⏸ Hold on</h1><p>The MC pressed pause. Clock is frozen.</p></div></div>
+<canvas id="confetti"></canvas>
+<script src="/common.js"></script>
+<script src="/music.js"></script>
+<script>
+const qs = new URLSearchParams(location.search);
+const secret = qs.get('k') || '';
+const stage = document.getElementById('stage'), strip = document.getElementById('strip');
+const ring = TimerRing(document.getElementById('ring'));
+let info = { qr: '', joinUrl: '' }, lastKey = null, S = null, lastTick = null, lastPhase = null;
+
+async function loadInfo() {
+  try {
+    info = await (await fetch('/api/info')).json();
+    const img = document.getElementById('qr'); if (img) img.src = info.qr;
+    const u = document.getElementById('joinurl'); if (u) u.textContent = info.joinUrl.replace(/^https?:\/\//, '');
+  } catch {}
+}
+loadInfo(); setInterval(loadInfo, 30000);
+
+function unlockOnce() { Music.unlock(); const h = document.getElementById('sndhint'); if (h) h.remove(); }
+document.addEventListener('click', unlockOnce, { once: true });
+document.addEventListener('keydown', unlockOnce, { once: true });
+
+const P = (s, id) => s.players.find((p) => p.id === id) || { id, name: '???', emoji: '👻' };
+const av = (p, cls = '', extra = '') => `<span class="avatar ${cls}" data-id="${p.id}" id="av-${p.id}">${avatarInner(p)}${esc(p.name)}${extra}</span>`;
+const circ = (p) => p.photo ? `<img src="${esc(p.photo)}" alt="">` : p.emoji;
+const bigAv = (p, gold = false, gain = '') => `<span class="bigav ${gold ? 'gold' : ''}" id="av-${p.id}"><span class="bimg">${circ(p)}</span><span class="bn">${esc(p.name)}</span>${gain}</span>`;
+const medAv = (p, cls = '', gain = '') => `<span class="medav ${cls}" id="av-${p.id}"><span class="bimg">${circ(p)}</span><span class="bn">${esc(p.name)}</span>${gain}</span>`;
+const avs = (s, ids, cls = '') => ids.map((id) => av(P(s, id), cls)).join('');
+const names = (s, ids) => ids.map((id) => esc(P(s, id).name)).join(' & ');
+const tag = (s) => s.item.double ? `<div class="qtag double">Final question · double points</div>` : `<div class="qtag">Question ${s.qnum} of ${s.qtotal}</div>`;
+const instrFor = (s) => {
+  const it = s.item, G = esc(s.grandmaName);
+  if (it.type === 'fibbage') return it.tone === 'guess' ? `${G} types her answer. Everyone else writes what they <b class="pink">think she said</b>. Same clock.` : `${G} types the <b class="gold">TRUTH</b>. Everyone else types a <b class="pink">LIE</b>. Same clock.`;
+  if (it.type === 'number') return `${G} enters the real number. Closest guess wins.`;
+  if (it.type === 'pick') return `${G} picks. You predict.`;
+  if (it.type === 'image') return `Everyone describes a picture. The AI draws it. ${G} judges at the end.`;
+  return '';
+};
+
+const seenJoiners = new Set();
+let lobbyCount = 0;
+const joinerHtml = (s) => {
+  const mark = (key) => { const isNew = !seenJoiners.has(key); seenJoiners.add(key); return isNew ? 'new' : ''; };
+  const g = s.grandmaConnected ? `<div class="joiner g ${mark('grandma')}"><div class="jav">${s.grandmaPhoto ? `<img src="${esc(s.grandmaPhoto)}" alt="">` : '👑'}</div><div class="jn">👑 ${esc(s.grandmaName)}</div></div>` : '';
+  const html = g + s.players.map((p) => `<div class="joiner ${p.connected ? '' : 'dim'} ${mark(p.id)}"><div class="jav">${p.photo ? `<img src="${esc(p.photo)}" alt="">` : p.emoji}</div><div class="jn">${esc(p.name)}</div></div>`).join('');
+  const count = s.players.length + (s.grandmaConnected ? 1 : 0);
+  if (count > lobbyCount && lobbyCount > 0 && Music.ready) [Music.sfx.pop, Music.sfx.coin, Music.sfx.slide, Music.sfx.boing][(Math.random() * 4) | 0]();
+  lobbyCount = count;
+  return html;
+};
+function lobby(s) {
+  return `<div class="lobby">
+    <div class="lobby-l pop">
+      <img id="qr" class="qr" src="${info.qr}" alt="">
+      <div class="joinurl" id="joinurl">${esc(info.joinUrl.replace(/^https?:\/\//, ''))}</div>
+    </div>
+    <div class="lobby-r">
+      <div class="lobbyhead">📸 Scan to join · <span class="n" id="jcount">${s.players.length}</span> in so far</div>
+      <div class="lobbysub">Type your name, take a selfie, and you're in. ${esc(s.grandmaName)} scans her gold code. Little kids share a phone with a grown-up.</div>
+      <div class="joingrid" id="joined">${joinerHtml(s)}</div>
+    </div>
+  </div>`;
+}
+function slide(s) {
+  const it = s.item;
+  if (it.type === 'photo') return `<div class="photo pop"><img src="/${esc(it.src)}" alt=""><div class="cap">${esc(it.caption || '')}</div></div>`;
+  return `<h1 class="pop">${esc(it.heading || '')}</h1><div class="sub rise d1">${esc(it.sub || '')}</div>`;
+}
+const groupCards = (s) => s.groups && s.item.type === 'image' ? `<div class="groupgrid">${s.groups.map((g) => `<div class="groupcard rise"><div class="gh">Group ${g.i + 1}</div><div class="gp">${esc(g.prompt || '')}</div><div class="gm">${g.pids.map((id) => esc(P(s, id).name)).join(', ')}</div></div>`).join('')}</div>` : '';
+function read(s) {
+  const it = s.item;
+  if (it.type === 'image') return `${tag(s)}<h2 class="prompt small pop">${esc(it.prompt)}</h2><div class="instr">Find your name below. Your theme is on your phone too. On GO: type the prompt that creates the best picture of it.</div>${groupCards(s)}<div class="readtag">🎙️ Listen up. Timer starts on GO. ${s.item.timer}s on the clock.</div>`;
+  return `${tag(s)}<h2 class="prompt pop">${blank(it.prompt)}</h2>${it.image ? `<img class="qimg pop" src="/${esc(it.image)}" alt="">` : ''}<div class="instr rise d1">${instrFor(s)}</div>
+  ${it.type === 'pick' ? `<div class="pickgrid rise d1">${s.pickOptions.map((o) => `<div class="pickopt">${esc(o)}</div>`).join('')}</div>` : ''}
+  <div class="readtag">🎙️ Listen up. Timer starts on GO. ${s.item.timer}s on the clock.</div>`;
+}
+function answer(s) {
+  const it = s.item, G = esc(s.grandmaName); let body = '';
+  body = it.type === 'image' ? `<h2 class="prompt small pop">${esc(it.prompt)}</h2>${groupCards(s)}` : `<h2 class="prompt pop">${blank(it.prompt)}</h2>${it.image ? `<img class="qimg pop" src="/${esc(it.image)}" alt="">` : ''}`;
+  if (it.type === 'pick') body += `<div class="pickgrid rise d1">${s.pickOptions.map((o) => `<div class="pickopt">${esc(o)}</div>`).join('')}</div>`;
+  body += `<div class="instr rise d1">${instrFor(s)}</div>`;
+  const noun = it.type === 'fibbage' ? (it.tone === 'guess' ? 'guesses' : 'lies') : it.type === 'number' ? 'guesses' : it.type === 'image' ? 'prompts' : 'picks';
+  const gw = it.type === 'image' ? `<div class="gwait ok">👑 ${G} is the judge</div>` : `<div class="gwait ${s.grandmaAnswered ? 'ok' : ''}" id="gwait">${s.grandmaAnswered ? `👑 ${G} locked in` : `👑 ${G} is typing...`}</div>`;
+  return `${tag(s)}${body}
+  <div class="status">${gw}<div class="cnt"><b id="cnt">${s.answeredCount}</b> of <span id="tot">${s.connectedCount}</span> ${noun} in</div></div>
+  <div class="waitbanner ${s.waitingOnGrandma ? '' : 'hide'}" id="waitbanner">⏰ Time's up! The vote starts the second ${G}'s answer is in. 👀</div>`;
+}
+function sorting(s) {
+  return `${tag(s)}<h2 class="prompt small">${blank(s.item.prompt)}</h2><div class="reveal"><div class="sorting">🧹 Sorting the ${s.item.tone === 'guess' ? 'answers' : 'lies'}...</div><div class="instr">Merging duplicates and typos so nobody gets cheated.</div></div>`;
+}
+function vote(s) {
+  const n = s.options.length, cls = n > 12 ? 'lots' : n > 6 ? 'many' : '';
+  return `${tag(s)}<h2 class="prompt small">${blank(s.item.prompt)}</h2><div class="instr">Which one is the <b class="gold">TRUTH</b>?</div>
+  <div class="opts ${cls}">${s.options.map((o, i) => `<div class="opt rise" style="animation-delay:${i * 0.07}s"><span class="n">${i + 1}</span>${esc(o.text)}</div>`).join('')}</div>
+  ${s.voteOpen ? `<div class="status"><div class="cnt"><b id="cnt">${s.votedCount}</b> of <span id="tot">${s.voterCount}</span> voted</div></div>` : `<div class="readyline">👀 Read them over. Voting opens on GO: ${s.item.timer ? '' : ''}30 seconds.</div>`}`;
+}
+function reveal(s) {
+  const st = s.steps[s.step]; if (!st) return '';
+  const G = esc(s.grandmaName); let body = '';
+  const lieWord = s.item.tone === 'guess' ? 'GUESS' : 'LIE';
+  const chipTo = (ids, pts, delayMs) => ids.map((id, i) => `<span class="flychip" data-to="av-${id}" data-delay="${delayMs + i * 120}" data-pts="+${pts.toLocaleString()}">+${pts.toLocaleString()}</span>`).join('');
+  switch (st.kind) {
+    case 'intro':
+      body = `<div class="rtitle pop" style="font-size:clamp(34px,4vw,60px)">🕵️ Let's see what everyone said</div><div class="vlbl rise d1">${st.lieCount} answers went up. ${st.votedCount ? `${st.votedCount} of them fooled somebody...` : 'Somehow nobody fooled anybody.'}</div>`; break;
+    case 'singles':
+      body = `<div class="rtitle pop">These each fooled one person</div><div class="singlegrid">${st.lies.map((l, i) => `<div class="scard2 rise" style="animation-delay:${0.15 + i * 0.12}s"><span class="mini-ribbon">${lieWord}</span><div class="s2text">${esc(l.text)}</div><div class="s2row"><span class="s2who"><span class="s2img">${circ(P(s, l.voters[0]))}</span><span class="s2n">${esc(P(s, l.voters[0]).name)}</span></span><span class="s2arr">fell for</span><span class="s2who author" id="av-${l.authors[0]}"><span class="s2img">${circ(P(s, l.authors[0]))}</span><span class="s2n">${esc(P(s, l.authors[0]).name)}</span><span class="gain on" style="animation-delay:${0.9 + i * 0.12}s">+${l.points}</span></span></div></div>`).join('')}</div>`; break;
+    case 'lie':
+      body = `<div class="rcard pop ${st.text.length > 34 ? 'long' : ''}"><span class="ribbon">${lieWord}</span><div class="rtext">${esc(st.text)}</div></div>
+        <div class="vlbl rise d1">${st.voters.length} ${st.voters.length === 1 ? 'person' : 'people'} fell for it</div>
+        <div class="vrow">${st.voters.map((id, i) => `<span class="rise" style="animation-delay:${1 + i * 0.12}s">${medAv(P(s, id))}</span>`).join('')}</div>
+        <div class="authorline rise d2"><span style="color:var(--muted)">the ${lieWord.toLowerCase()} belongs to</span> ${st.authors.map((a) => bigAv(P(s, a), false, `<span class="gain" id="gain-${a}">+${st.points.toLocaleString()}</span>`)).join(' ')}</div>
+        ${chipTo(st.authors, st.points, 2300)}`; break;
+    case 'truth':
+      body = `<div class="drumroll pop" id="drum">🥁</div>
+        ${s.grandmaPhoto ? `<img class="grandmaface pop" style="animation-delay:2s" src="${esc(s.grandmaPhoto)}" alt="">` : ''}
+        <div class="rcard truth pop ${st.text.length > 34 ? 'long' : ''}" style="animation-delay:2s"><span class="ribbon">TRUTH</span><div class="rtext">${esc(st.text)}</div></div>
+        <div class="vlbl rise" style="animation-delay:2.9s">${st.voters.length ? `🧠 ${st.voters.length} ${st.voters.length === 1 ? 'person knows' : 'people know'} ${G}` : `Nobody got it. ${G} is a mystery. 😂`}</div>
+        <div class="vrow">${st.voters.map((id, i) => `<span class="rise" style="animation-delay:${3 + i * 0.12}s">${medAv(P(s, id), 'win', `<span class="gain" id="gain-${id}">+${st.points.toLocaleString()}</span>`)}</span>`).join('')}</div>
+        ${st.autoTruth.length ? `<div class="authorline rise" style="animation-delay:3.4s">${st.autoTruth.map((a) => medAv(P(s, a), 'win', `<span class="gain" id="gain-${a}">+${(st.points + (st.echo || 0)).toLocaleString()}</span>`)).join(' ')} <span style="color:var(--muted)">wrote her EXACT answer${st.echo ? ` — truth points plus +${(st.echo / Math.max(1, st.voters.length)).toLocaleString()} for every person who found it` : ''}. 🧠🎭</span></div>` : ''}
+        ${chipTo([...st.voters, ...st.autoTruth], st.points, 3400)}`; break;
+    case 'grandmaNumber':
+      body = `<div class="rtitle pop">${G} says...</div><div class="bignum pop d1">${esc(st.value)}${esc(st.unit)}</div>`; break;
+    case 'numberRanking':
+      body = `<div class="rtitle">${G}'s number: <b class="gold">${esc(s.steps[0].value)}</b></div><div class="rank">${st.rows.slice(0, 10).map((r, i) => `<div class="rrow rise ${r.points ? 'win' : ''}" style="animation-delay:${i * 0.1}s"><span class="pos">${i + 1}</span>${av(P(s, r.id))}<span class="guess">${esc(r.guess)}</span>${r.points ? `<span class="pts">+${r.points}</span>` : ''}</div>`).join('')}${st.rows.length > 10 ? `<div class="more">and ${st.rows.length - 10} more who were way off</div>` : ''}${st.rows.length === 0 ? '<div class="more">Nobody guessed. Rough.</div>' : ''}</div>`; break;
+    case 'pickSplit': {
+      const max = Math.max(1, ...st.options.map((o) => o.count));
+      body = `<div class="rtitle pop">What the family thinks</div><div class="bars">${st.options.map((o, i) => `<div class="bar rise" style="animation-delay:${i * 0.08}s"><span class="bl">${esc(o.text)}</span><span class="bf"><span style="width:${(o.count / max) * 100}%"></span></span><span class="bc">${o.count}</span></div>`).join('')}</div>`; break;
+    }
+    case 'grandmaPick':
+      body = `<div class="rtitle pop">${G} picked...</div>${s.grandmaPhoto ? `<img class="grandmaface pop d1" style="width:130px;height:130px" src="${esc(s.grandmaPhoto)}" alt="">` : ''}<div class="rcard truth pop d1"><span class="ribbon">HER PICK</span><div class="rtext">${esc(st.value)}</div></div>
+        <div class="vlbl rise d2">${st.winners.length ? 'Called it:' : 'Nobody saw that coming.'}</div><div class="vrow">${st.winners.map((id, i) => `<span class="rise" style="animation-delay:${2.2 + i * 0.12}s">${av(P(s, id), 'win', `<span class="gain" id="gain-${id}">+${st.points}</span>`)}</span>`).join('')}</div>${chipTo(st.winners, st.points, 2600)}`; break;
+  }
+  return `${tag(s)}<h2 class="prompt tiny">${blank(s.item.prompt)}</h2><div class="reveal">${body}</div><div class="stepdots">${s.steps.map((_, i) => `<i class="${i <= s.step ? 'on' : ''}"></i>`).join('')}</div>`;
+}
+// points fly from the answer card into the player's avatar, then a +N badge sticks to the avatar
+function flyChips() {
+  const card = stage.querySelector('.rcard'); if (!card) return;
+  stage.querySelectorAll('.flychip').forEach((chip) => {
+    const target = document.getElementById(chip.dataset.to); if (!target) return;
+    setTimeout(() => {
+      const c = card.getBoundingClientRect(), t = target.getBoundingClientRect();
+      chip.style.left = (c.left + c.width / 2 - 40) + 'px'; chip.style.top = (c.top + c.height / 2 - 20) + 'px'; chip.style.opacity = 1;
+      const dx = t.left + t.width / 2 - (c.left + c.width / 2), dy = t.top + t.height / 2 - (c.top + c.height / 2);
+      chip.animate([{ transform: 'translate(0,0) scale(1.2)', opacity: 1 }, { transform: `translate(${dx}px,${dy}px) scale(.5)`, opacity: .9 }], { duration: 650, easing: 'cubic-bezier(.3,.8,.4,1)', fill: 'forwards' }).onfinish = () => {
+        chip.style.display = 'none';
+        const g = document.getElementById('gain-' + chip.dataset.to.replace('av-', '')); if (g) g.classList.add('on');
+        if (Music.ready) Music.sfx.coin();
+      };
+    }, Number(chip.dataset.delay) || 0);
+  });
+}
+const awardsSmall = (s) => `<div class="awardsmall">${s.awards.knows ? `<span>🧠 Knows ${esc(s.grandmaName)} best: ${s.awards.knows.emoji} ${esc(s.awards.knows.name)}</span>` : ''}${s.awards.fooler ? `<span>🎭 Best impersonator: ${s.awards.fooler.emoji} ${esc(s.awards.fooler.name)}</span>` : ''}</div>`;
+function scores(s) {
+  const lb = s.leaderboard;
+  const medal = (i) => ['🥇', '🥈', '🥉'][i] || '';
+  const cls = (i) => ['first', 'second', 'third'][i] || '';
+  const race = (key, cls2, title) => {
+    const rows = s.players.slice().sort((a, b) => b[key] - a[key]).slice(0, 3).filter((p) => p[key] > 0);
+    return `<div class="race ${cls2}"><div class="racet">${title}</div>${rows.length ? rows.map((p, i) => `<div class="racerow ${i === 0 ? 'lead' : ''}"><span class="rimg">${p.photo ? `<img src="${esc(p.photo)}" alt="">` : p.emoji}</span><span class="rname">${['🥇', '🥈', '🥉'][i]} ${esc(p.name)}</span><span class="rpts">${p[key].toLocaleString()}</span></div>`).join('') : '<div class="racerow none">nobody yet</div>'}</div>`;
+  };
+  return `<div class="scorewrap"><div class="lbcol"><div class="rtitle pop">Leaderboard</div><div class="lb">${lb.slice(0, 10).map((p, i) => `<div class="lrow rise ${cls(i)}" style="animation-delay:${i * 0.07}s"><span class="medal">${medal(i) || `<span class="pos">${p.rank}</span>`}</span>${av(p)}${p.delta ? `<span class="pts" style="margin-left:auto">+${p.delta.toLocaleString()}</span>` : '<span style="margin-left:auto"></span>'}<span class="score">${p.score.toLocaleString()}</span></div>`).join('')}${lb.length > 10 ? `<div class="more">and ${lb.length - 10} more</div>` : ''}</div></div>
+  <div class="races">${race('truthPts', 'knows', `🧠 Knows ${esc(s.grandmaName)} best`)}${race('foolPts', 'fooler', `🎭 Best impersonator`)}</div></div>`;
+}
+function final(s) {
+  const [a, b, c] = s.leaderboard, G = esc(s.grandmaName);
+  const pod = (p, cls, medal) => p ? `<div class="pod ${cls} pop"><div class="medal">${medal}</div><div class="pem">${p.photo ? `<img src="${esc(p.photo)}" alt="">` : p.emoji}</div><div class="pname">${esc(p.name)}</div><div class="pscore">${p.score.toLocaleString()}</div></div>` : '';
+  const aw = (x, cls, title, sub) => x ? `<div class="award ${cls} pop"><div class="at">${title}</div><div class="aem">${x.photo ? `<img src="${esc(x.photo)}" alt="">` : x.emoji}</div><div class="an">${esc(x.name)}${x.tie ? ' (tie)' : ''}</div><div class="av">${x.value.toLocaleString()} ${sub}</div></div>` : '';
+  const rows = s.leaderboard.map((p, i) => `<div class="frow ${i === 0 ? 'first' : ''}"><span class="fpos">${['🥇', '🥈', '🥉'][i] || p.rank}</span><span class="fimg">${circ(p)}</span><span class="fname">${esc(p.name)}</span><span class="fpts">${p.score.toLocaleString()}</span></div>`).join('');
+  return `<div class="finalwrap">
+    <div class="finalleft">
+      <div class="rtitle pop">🏆 ${a ? esc(a.name) + ' wins!' : 'The trophies'} 🏆</div>
+      <div class="podium">${pod(b, 'second', '🥈')}${pod(a, 'first', '🥇')}${pod(c, 'third', '🥉')}</div>
+      <div class="awards" style="margin-top:26px">${aw(s.awards.knows, 'knows', `🧠 Knows ${G} best`, 'truth points')}${aw(s.awards.fooler, 'fooler', `🎭 Best ${G} impersonator`, 'fooling points')}</div>
+      <div class="finalsub rise d2">Happy 60th, ${G}. ❤️</div>
+    </div>
+    <div class="finalright rise d1"><div class="fhead">Final standings</div>${rows}</div>
+  </div>`;
+}
+function imageQueued(s) {
+  const p = s.imageProgress;
+  return `<div class="reveal"><div class="rtitle pop">🎨 Prompts are in</div><h2 class="prompt small pop">The AI is drawing ${p.total} pictures of ${esc(s.grandmaName)}...</h2><div class="progress"><b id="cnt">${p.done + p.failed}</b> of <span id="tot">${p.total}</span> done</div><div class="instr rise d1">We'll keep playing while it draws. Gallery in a couple of questions.</div></div>`;
+}
+function galleryWait(s) {
+  const p = s.imageProgress;
+  return `<div class="reveal"><div class="rtitle pop">🎨 Almost there</div><h2 class="prompt small">Still drawing...</h2><div class="progress"><b id="cnt">${p.done + p.failed}</b> of <span id="tot">${p.total}</span> done</div><div class="instr">The gallery opens the moment they're finished.</div></div>`;
+}
+const imgCard = (im, cls = '') => im.status === 'done' ? `<img class="${cls}" src="${esc(im.url)}" alt="">` : `<div class="gfail">🚫 ${esc(im.error || 'No picture')}<br><br>Prompt was: "${esc(im.prompt)}"</div>`;
+const batchTag = (s) => s.gallery ? `<div class="batchtag">🖼️ Group ${s.gallery.group + 1} of ${s.gallery.batches} · "${esc(s.gallery.prompt || '')}"</div>` : '';
+function galleryShow(s) {
+  const im = s.images[s.galleryStep]; if (!im) return '';
+  return `<div class="gmemory pop" style="margin-top:4px">${esc(s.gallery ? s.gallery.prompt : '')}</div><div class="qtag">Picture ${s.galleryStep + 1} of ${s.images.length} · Group ${s.gallery.group + 1}</div><div class="reveal">${imgCard(im, 'gimg pop')}<div class="instr rise d1">Whose is it? Revealed after the vote. 🤫</div></div>`;
+}
+function galleryVote(s) {
+  const n = s.images.length;
+  return `<div class="gmemory pop" style="margin-top:4px">${esc(s.gallery ? s.gallery.prompt : '')}</div><div class="qtag">Vote for the best picture in this group</div><div class="instr">Pick your favorite on your phone. ${esc(s.grandmaName)} picks hers. Hers is worth triple.</div>
+  <div class="ggrid ${n > 12 ? 'small' : ''}">${s.images.map((im, i) => `<div class="gc rise" style="animation-delay:${i * 0.05}s"><span class="n">${i + 1}</span>${im.status === 'done' ? `<img src="${esc(im.url)}" alt="">` : `<div class="fail">🚫 "${esc(im.prompt.slice(0, 60))}"</div>`}</div>`).join('')}</div>
+  <div class="status"><div class="cnt"><b id="cnt">${s.votedCount}</b> of <span id="tot">${s.connectedCount}</span> voted</div><div class="gwait ${s.grandmaPickDone ? 'ok' : ''}" id="gwait">${s.grandmaPickDone ? `👑 ${esc(s.grandmaName)} has chosen` : `👑 ${esc(s.grandmaName)} is deciding...`}</div></div>`;
+}
+function galleryReveal(s) {
+  const st = s.steps[s.step]; if (!st) return '';
+  const G = esc(s.grandmaName);
+  const byId = (id) => s.images.find((i) => i.id === id);
+  let body = '';
+  if (st.kind === 'crowd') {
+    const [a, b, c] = st.ranking.map((r) => ({ ...r, im: byId(r.id) }));
+    const gp = (r, cls, medal) => r && r.im ? `<div class="gp ${cls} pop">${r.im.status === 'done' ? `<img src="${esc(r.im.url)}" alt="">` : `<div class="gfail" style="width:220px;font-size:14px">🚫</div>`}<div class="gv">${medal} ${r.votes} vote${r.votes === 1 ? '' : 's'}</div></div>` : '';
+    body = `${batchTag(s)}<div class="rtitle pop">The family's favorites</div><div class="gpod">${gp(b, 'second', '🥈')}${gp(a, 'first', '🥇')}${gp(c, 'third', '🥉')}</div><div class="instr rise d2">Artists still secret... 🤫</div>`;
+  } else if (st.kind === 'grandmaFavorite') {
+    const im = st.pick ? byId(st.pick.id) : null;
+    body = st.pick && im ? `${batchTag(s)}<div class="rtitle pop">👑 ${G}'s favorite</div>${imgCard(im, 'gimg pop d0')}<div class="instr rise d1">Who made it? One more click...</div>` : `<div class="rtitle pop">${G} couldn't decide. Typical.</div>`;
+  } else if (st.kind === 'artists') {
+    body = `${batchTag(s)}<div class="rtitle pop">🎨 Who made what</div><div class="artgrid">${st.artists.map((a2, i) => { const im = byId(a2.id); const p = P(s, a2.pid); return `<div class="artcard rise ${a2.grandmaPick ? 'gold' : ''}" style="animation-delay:${0.25 + i * 0.3}s">${a2.grandmaPick ? '<div class="artcrown">👑</div>' : ''}${im && im.status === 'done' ? `<img class="arti" src="${esc(im.url)}" alt="">` : `<div class="artfail">🚫</div>`}<div class="artby"><span class="rimg">${circ(p)}</span><span>${esc(p.name)}</span>${a2.points ? `<span class="pts">+${a2.points.toLocaleString()}</span>` : ''}</div><div class="artprompt">"${esc(a2.prompt)}"</div></div>`; }).join('')}</div>`;
+  }
+  return `<div class="reveal">${body}</div><div class="stepdots">${s.steps.map((_, i) => `<i class="${i <= s.step ? 'on' : ''}"></i>`).join('')}</div>`;
+}
+const VIEWS = { lobby, slide, read, answer, sorting, vote, reveal, scores, final, imageQueued, galleryWait, galleryShow, galleryVote, galleryReveal };
+
+function renderStrip(s) {
+  const G = s.grandmaName;
+  const needG = (s.phase === 'answer' && s.item.type !== 'image') || s.phase === 'galleryVote';
+  const gDone = s.phase === 'galleryVote' ? s.grandmaPickDone : s.grandmaAnswered;
+  const done = (p) => s.phase === 'answer' ? p.answered : p.voted;
+  const list = s.players.filter((p) => p.connected && !(s.phase === 'vote' && s.phase === 'vote' && false));
+  const inList = list.filter(done), waitList = list.filter((p) => !done(p));
+  let inHtml = inList.map((p) => av(p, 'done')).join(''), waitHtml = waitList.map((p) => av(p)).join('');
+  const gAv = s.grandmaConnected ? `<span class="avatar g"><span class="em">👑</span>${esc(G)}</span>` : `<span class="avatar g dim"><span class="em">👑</span>${esc(G)} (not scanned in!)</span>`;
+  if (needG) { if (gDone && s.grandmaConnected) inHtml = gAv + inHtml; else waitHtml = gAv + waitHtml; }
+  document.getElementById('zin').innerHTML = inHtml || '<div class="empty">nobody yet</div>';
+  document.getElementById('zwait').innerHTML = waitHtml || '<div class="empty">everyone is in 🎉</div>';
+}
+let prevGrandmaAnswered = false, gpopT = null, prevIn = 0;
+function submitPop(s) {
+  const now = s.phase === 'answer' ? s.answeredCount : (s.phase === 'vote' || s.phase === 'galleryVote') ? s.votedCount : 0;
+  if (now > prevIn && Music.ready) Music.sfx.submit();
+  prevIn = now;
+}
+function grandmaPop(s) {
+  const now = !!s.grandmaAnswered && ['read', 'answer'].includes(s.phase) && s.item && s.item.type !== 'image';
+  if (now && !prevGrandmaAnswered) {
+    const el = document.getElementById('gpop'); el.textContent = `👑 ${s.grandmaName} locked in her answer!`; el.classList.add('on');
+    clearTimeout(gpopT); gpopT = setTimeout(() => el.classList.remove('on'), 2800);
+    if (Music.ready) Music.sfx.grandma();
+  }
+  prevGrandmaAnswered = now;
+}
+function doneCls(s, p) {
+  if (!p.connected) return 'dim';
+  if (s.phase === 'answer') return p.answered ? 'done' : '';
+  if (s.phase === 'vote' || s.phase === 'galleryVote') return p.voted ? 'done' : '';
+  return '';
+}
+function sound(s) {
+  if (!Music.ready) return;
+  Music.setMuted(!!s.muted);
+  document.getElementById('mutebadge').classList.toggle('hide', !s.muted);
+  let mapped = (s.musicMap || {})[s.phase];
+  if (s.phase === 'vote' && !s.voteOpen) mapped = null; // answers on screen, silence until GO
+  const musical = s.paused ? null : mapped && mapped !== 'none' ? mapped : null;
+  if (musical) Music.start(musical); else Music.stop();
+  if (lastPhase !== s.phase) {
+    if ((lastPhase === 'answer' || lastPhase === 'vote' || lastPhase === 'galleryVote') && !musical && !s.paused) Music.sfx.buzzer();
+    if (s.phase === 'scores' && lastPhase !== 'scores') Music.sfx.sparkle();
+    if (s.phase === 'final') Music.sfx.fanfare();
+    if (s.phase === 'sorting') Music.sfx.whoosh();
+  }
+  if (s.phase === 'galleryReveal' && s.steps[s.step] && s.steps[s.step].kind === 'grandmaFavorite' && lastKey !== [s.phase, s.idx, s.step].join('|')) Music.sfx.fanfare();
+}
+function render(s) {
+  s.grandmaPickDone = s.phase === 'galleryVote' && s.grandmaAnswered;
+  sound(s); grandmaPop(s); submitPop(s);
+  S = s;
+  document.getElementById('title').textContent = s.title;
+  document.getElementById('subtitle').textContent = s.subtitle || '';
+  document.getElementById('gstate').innerHTML = s.grandmaConnected ? `<span class="gon">👑 ${esc(s.grandmaName)} is in</span>` : `<span class="goff">👑 waiting for ${esc(s.grandmaName)}'s phone</span>`;
+  document.getElementById('qcount').textContent = s.qnum && !['lobby', 'final'].includes(s.phase) ? `${s.qnum} / ${s.qtotal}` : '';
+  ring.set(s.deadline, client.now);
+  const ip = s.imageProgress;
+  document.getElementById('picsready').classList.toggle('hide', !(ip.total > 0 && ip.done + ip.failed === ip.total && !['imageQueued', 'galleryWait', 'galleryShow', 'galleryVote', 'galleryReveal', 'lobby', 'final'].includes(s.phase)));
+  document.getElementById('pausedov').classList.toggle('hide', !s.paused);
+  const showStrip = ['answer', 'vote', 'galleryVote'].includes(s.phase);
+  strip.classList.toggle('hide', !showStrip);
+  const key = [s.phase, s.idx, s.step, s.galleryStep].join('|');
+  if (key !== lastKey) {
+    lastKey = key; lastPhase = s.phase;
+    stage.className = 'stage anim phase-' + s.phase;
+    stage.innerHTML = (VIEWS[s.phase] || (() => ''))(s);
+    if (showStrip) renderStrip(s);
+    confetti(s.phase === 'final');
+    if (s.phase === 'reveal' || s.phase === 'galleryReveal') {
+      const st = s.steps[s.step];
+      if (st && st.kind === 'truth') { if (Music.ready) Music.sfx.drumroll(2); setTimeout(() => { const d = document.getElementById('drum'); if (d) d.style.display = 'none'; if (Music.ready) Music.sfx.ding(); }, 2000); }
+      requestAnimationFrame(flyChips);
+    }
+    return;
+  }
+  lastPhase = s.phase;
+  if (showStrip) renderStrip(s);
+  patch(s);
+}
+function patch(s) {
+  const $ = (id) => document.getElementById(id);
+  if ($('joined')) { $('joined').innerHTML = joinerHtml(s); if ($('jcount')) $('jcount').textContent = s.players.length; }
+  const p = s.imageProgress;
+  if ($('cnt')) $('cnt').textContent = s.phase === 'vote' || s.phase === 'galleryVote' ? s.votedCount : (s.phase === 'imageQueued' || s.phase === 'galleryWait') ? p.done + p.failed : s.answeredCount;
+  if ($('tot')) $('tot').textContent = s.phase === 'vote' ? s.voterCount : (s.phase === 'imageQueued' || s.phase === 'galleryWait') ? p.total : s.connectedCount;
+  if ($('gwait')) {
+    const ok = s.phase === 'galleryVote' ? s.grandmaPickDone : s.grandmaAnswered;
+    $('gwait').className = 'gwait ' + (ok ? 'ok' : '');
+    $('gwait').textContent = s.phase === 'galleryVote' ? (ok ? `👑 ${s.grandmaName} has chosen` : `👑 ${s.grandmaName} is deciding...`) : (ok ? `👑 ${s.grandmaName} locked in` : `👑 ${s.grandmaName} is typing...`);
+  }
+  if ($('waitbanner')) $('waitbanner').classList.toggle('hide', !s.waitingOnGrandma);
+}
+// countdown ticks in the last 10 seconds
+(function tickLoop() {
+  if (S && S.deadline && Music.ready) {
+    const rem = Math.ceil((S.deadline - client.now()) / 1000);
+    if (rem <= 10 && rem > 0 && rem !== lastTick) { lastTick = rem; Music.sfx.tick(); }
+  } else lastTick = null;
+  requestAnimationFrame(tickLoop);
+})();
+
+// confetti
+const cv = document.getElementById('confetti'), cx = cv.getContext('2d');
+let parts = [], confettiOn = false;
+function confetti(on) {
+  if (on === confettiOn) return;
+  confettiOn = on; if (!on) { parts = []; cx.clearRect(0, 0, cv.width, cv.height); return; }
+  cv.width = innerWidth; cv.height = innerHeight;
+  const colors = ['#ff3d8a', '#ffd23f', '#2ee6d6', '#4ade80', '#8b5cf6', '#fff'];
+  parts = Array.from({ length: 220 }, () => ({ x: Math.random() * cv.width, y: -Math.random() * cv.height, w: 8 + Math.random() * 8, h: 6 + Math.random() * 10, c: colors[(Math.random() * colors.length) | 0], vy: 2 + Math.random() * 3, vx: -1 + Math.random() * 2, r: Math.random() * 6.28, vr: -0.1 + Math.random() * 0.2 }));
+  (function loop() {
+    if (!confettiOn) return;
+    cx.clearRect(0, 0, cv.width, cv.height);
+    for (const p of parts) { p.y += p.vy; p.x += p.vx; p.r += p.vr; if (p.y > cv.height + 20) { p.y = -20; p.x = Math.random() * cv.width; } cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r); cx.fillStyle = p.c; cx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); cx.restore(); }
+    requestAnimationFrame(loop);
+  })();
+}
+
+const client = GameClient({ role: 'tv', secret, onState: render, onEvent: (e) => { if (e.t === 'close') document.body.classList.add('offline'); if (e.t === 'open') document.body.classList.remove('offline'); } });
+async function toggleSetup() {
+  const ov = document.getElementById('setupov');
+  if (!ov.classList.contains('hide')) { ov.classList.add('hide'); return; }
+  try { const a = await (await fetch('/api/admin?k=' + encodeURIComponent(secret))).json(); document.getElementById('mcqr').src = a.mcQr; document.getElementById('gqr').src = a.grandmaQr; ov.classList.remove('hide'); } catch {}
+}
+if (secret) {
+  document.getElementById('hintkey').classList.remove('hide');
+  document.addEventListener('keydown', (e) => {
+    if (e.code === 'Space' || e.code === 'ArrowRight') { e.preventDefault(); client.send({ t: 'mc', cmd: S && S.phase === 'read' ? 'go' : 'next' }); }
+    if (e.key === 'm' || e.key === 'M') client.send({ t: 'mc', cmd: 'mute' });
+    if (e.key === 's' || e.key === 'S') toggleSetup();
+    if (e.key === 'f' || e.key === 'F') { try { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); } catch {} }
+    if (e.key === 'Escape') document.getElementById('setupov').classList.add('hide');
+  });
+  document.getElementById('setupov').addEventListener('click', () => document.getElementById('setupov').classList.add('hide'));
+}
+</script>
+</body>
+</html>
