@@ -3,7 +3,7 @@
     "playlist = what gets played, in order. Edit freely, restart the server after.",
     "Types: fibbage | number | pick | image (everyone writes an AI picture prompt; players are split into groups of ~4 and each group gets one of the 'prompts'; Grandma judges later) | gallery (shows the pictures group by group: each picture, a vote, crowd favorite + Grandma's pick, then the next group) | photo | slide.",
     "Per-question options: timer (seconds, overrides the default), double: true (double points), tone: 'guess' (phones say 'write what you think she said' instead of 'write a lie', for the meaningful ones), options: [...] for pick questions.",
-    "pick questions with no options use pickOptions from game/config.json. PUT HER 12 KIDS' NAMES THERE. If that is empty too, it falls back to the players' names.",
+    "pick questions with no options use pickOptions from game/config.json. PUT THE KIDS' NAMES THERE. If that is empty too, it falls back to the players' names.",
     "Put the image question 2 questions before the gallery so the AI has time to draw (about 15 to 30 seconds per picture, 3 at a time).",
     "spares = more questions to swap in. Roughly 70% funny, 30% meaningful.",
     "image items: use 'prompts' (a list, one per group, reused in order if there are more groups) and 'prompt' (what the TV says). Put the gallery 2-4 questions later so the AI has time (about 20s per picture, 3 at a time: 16 pictures ~ 2 minutes)."
@@ -68,11 +68,11 @@
       },
       {
         "type": "fibbage",
-        "prompt": "\"Blauer Power\" is the family's name for ____."
+        "prompt": "The family's secret handshake move is ____."
       },
       {
         "type": "fibbage",
-        "prompt": "The Blauer family is famous for three things: body odor, hairlines, and ____."
+        "prompt": "This family is famous for three things: being loud, being late, and ____."
       },
       {
         "type": "fibbage",
@@ -96,7 +96,7 @@
       },
       {
         "type": "fibbage",
-        "prompt": "Grandma's go-to order at McGrath's Fish House was ____."
+        "prompt": "Grandma's go-to order at her favorite restaurant is ____."
       },
       {
         "type": "fibbage",
@@ -108,7 +108,7 @@
       },
       {
         "type": "fibbage",
-        "prompt": "The essential oil Grandma's parents swore could cure anything was ____."
+        "prompt": "The home remedy Grandma swears can cure anything is ____."
       },
       {
         "type": "fibbage",
@@ -116,7 +116,7 @@
       },
       {
         "type": "fibbage",
-        "prompt": "Grandma's real reason for adopting kid number eight: ____."
+        "prompt": "Grandma's real reason for having so many kids: ____."
       },
       {
         "type": "fibbage",
@@ -140,7 +140,7 @@
       },
       {
         "type": "fibbage",
-        "prompt": "The celebrity Grandma would leave all 12 of us for is ____."
+        "prompt": "The celebrity Grandma would leave all of us for is ____."
       },
       {
         "type": "fibbage",
@@ -160,7 +160,7 @@
       },
       {
         "type": "fibbage",
-        "prompt": "The massage therapist's nickname for Grandma is ____."
+        "prompt": "The hairdresser's nickname for Grandma is ____."
       },
       {
         "type": "fibbage",
@@ -170,7 +170,7 @@
     "meaningful_fibbage": [
       {
         "type": "fibbage",
-        "prompt": "The moment Grandma knew she wanted to adopt was ____.",
+        "prompt": "The moment Grandma knew she wanted a big family was ____.",
         "tone": "guess"
       },
       {
@@ -216,11 +216,11 @@
       },
       {
         "type": "number",
-        "prompt": "How many of her 12 kids' middle names can Grandma say in a row without a mistake? (She'll prove it after.)"
+        "prompt": "How many of her kids' middle names can Grandma say in a row without a mistake? (She'll prove it after.)"
       },
       {
         "type": "number",
-        "prompt": "How many massages has Grandma had this year?"
+        "prompt": "How many naps has Grandma taken this month?"
       },
       {
         "type": "number",
@@ -236,7 +236,7 @@
       },
       {
         "type": "number",
-        "prompt": "How many hours of sleep did Grandma get in the closet last night?"
+        "prompt": "How many hours of sleep does Grandma actually get a night?"
       },
       {
         "type": "number",
@@ -276,15 +276,15 @@
       },
       {
         "type": "pick",
-        "prompt": "Which kid inherited the most Blauer body odor?"
+        "prompt": "Which kid inherited Grandma's stubbornness?"
       },
       {
         "type": "pick",
-        "prompt": "Which kid inherited the Blauer hairline?"
+        "prompt": "Which kid looks the most like Grandma?"
       },
       {
         "type": "pick",
-        "prompt": "Which kid has the most Blauer Power?"
+        "prompt": "Which kid is turning into Grandma the fastest?"
       },
       {
         "type": "pick",
@@ -350,7 +350,7 @@
     "imageThemes": [
       "The picture that best describes: Grandma's driving",
       "The picture that best describes: Grandma's anxiety",
-      "The picture that best describes: a Blauer family reunion",
+      "The picture that best describes: a full family reunion",
       "The picture that best describes: Grandma babysitting all the grandkids at once",
       "The picture that best describes: Grandma's relationship with returns and refunds",
       "The picture that best describes: Grandma at 90",
